@@ -7,6 +7,8 @@ def main(): Unit \ IO = {
     use Examples.Packrat.{parseNaive, parseMemo};
     use Examples.MiniLang.{runSource};
     use Examples.LeftRec.{parseLeft, parseRight};
+    use Examples.StreamDemo.{drivePostal, parseJsonChunks};
+    use MiniParse.Stream.{DriveEvent};
     use MiniParse.ErrorFormat.{formatError};
     use MiniParse.Core.{parse};
     use MiniParse.Combinator.{digit};
@@ -62,6 +64,23 @@ def main(): Unit \ IO = {
         println("  `${s}`");
         println("    left : ${parseLeft(s)}");
         println("    right: ${parseRight(s)}")
+    };
+
+    println("");
+    println("== Streaming (chunked feed) ==");
+    let chunks = "15" :: "0-00" :: "02" :: Nil;
+    println("postal chunks: ${chunks}");
+    match drivePostal(chunks) {
+        case (Ok(pc), ev) =>
+            println("  result: ${pc}");
+            println("  events: ${ev}")
+        case (Err(e), ev) =>
+            println("  error: ${e}");
+            println("  events: ${ev}")
+    };
+    match parseJsonChunks("{\"x\":" :: " [1,2]}" :: Nil) {
+        case Ok(v)  => println("json chunks: ${v}")
+        case Err(e) => println("json chunks error: ${e}")
     };
 
     println("");

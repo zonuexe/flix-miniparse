@@ -145,5 +145,13 @@ Progressive steps: implement features, then validate with a concrete target.
 | **3** | Done | Packrat (`MiniParse.Packrat` + `Examples.Packrat`); `ErrorFormat` |
 | **4** | Done | MiniLang: `let` / `print` / `if`–`then`–`else` / blocks + interpreter |
 | **5** | Done | Left-recursive packrat growth (Warth-style); left vs right assoc |
+| **6** | Done | Streaming input: `StreamState`, `feed`/`close`, `step` → Done/Fail/Await |
 
-Optional follow-ups: streaming input, richer standard library, package publish polish.
+Optional follow-ups: richer standard library, true parser suspension (coroutines), package publish polish.
+
+### Streaming notes (Step 6)
+
+- Pure `Parser`s are unchanged; streaming is an adapter layer.
+- `Await` when a failure occurs at the end of an **open** buffer (need more data).
+- After `close`, the same situation is a hard EOF `Fail`.
+- Each `step` restarts the pure parser from the saved cursor (no call-stack suspension).

@@ -34,6 +34,7 @@ Full design, module layout, and roadmap: **[docs/design-doc.md](docs/design-doc.
 - **Step 3 done** — packrat memoization (`Region` + `MutMap`) and error pretty-printing
 - **Step 4 done** — MiniLang (`let` / `print` / `if` / blocks) integrating expr + keyword boundaries
 - **Step 5 done** — left-recursive packrat growth (`E <- E+n / n` vs right-recursive)
+- **Step 6 done** — streaming / chunked input (`MiniParse.Stream`: feed, Await, drive)
 
 See the [roadmap](docs/design-doc.md#4-implementation-roadmap).
 
@@ -60,6 +61,7 @@ src/
     PEG.flix               # choice, & / ! predicates
     Packrat.flix           # Region + MutMap memoize helpers
     ErrorFormat.flix       # caret-style error messages
+    Stream.flix            # chunked input, Await / Done / Fail
   Examples/
     PostalCode.flix        # Step 0
     Json.flix              # Step 1
@@ -67,6 +69,7 @@ src/
     Packrat.flix           # Step 3 exponential vs memo
     MiniLang.flix          # Step 4 tiny language
     LeftRec.flix           # Step 5 left-recursive packrat
+    StreamDemo.flix        # Step 6 chunked postal / JSON
   Main.flix
 test/ …
 docs/design-doc.md
