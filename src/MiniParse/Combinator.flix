@@ -25,6 +25,10 @@ mod MiniParse.Combinator {
             case Err(e)      => Err(e)
         })
 
+    /// Defer building a parser until it is run (breaks recursive construction cycles).
+    pub def delay(thunk: Unit -> Parser[a]): Parser[a] =
+        mkParser(s -> runParser(thunk(), s))
+
     /// Sequence: run `p` then `q`, keep both results.
     pub def product(p: Parser[a], q: Parser[b]): Parser[(a, b)] =
         flatMap(x -> map(y -> (x, y), q), p)
@@ -164,5 +168,48 @@ mod MiniParse.Combinator {
 
     pub def charsToString(cs: List[Char]): String =
         List.join("", List.map(Char.toString, cs))
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Lexical helpers (JSON / general)
+    ///////////////////////////////////////////////////////////////////////////
+
+    /// One whitespace character (space, tab, CR, LF).
+    pub def spaceChar(): Parser[Char] =
+        satisfy(c -> c == ' ' or c == '\t' or c == '\n' or c == '\r', "whitespace")
+
+    /// Zero or more whitespace characters.
+    pub def ws(): Parser[Unit] =
+        map(_ -> (), many(spaceChar()))
+
+    /// Run `p` then skip trailing whitespace.
+    pub def lexeme(p: Parser[a]): Parser[a] =
+        andThenL(p, ws())
+
+    /// Match a literal string as a token (with trailing whitespace).
+    pub def symbol(lit: String): Parser[String] =
+        lexeme(string(lit))
+
+    /// `open_ p close_` — discard delimiters, keep `p`.
+    pub def between(open_: Parser[a], close_: Parser[b], p: Parser[c]): Parser[c] =
+        andThen(open_, andThenL(p, close_))
+
+    /// Zero or more `p` separated by `sep`.
+    pub def sepBy(p: Parser[a], sep: Parser[b]): Parser[List[a]] =
+        MiniParse.Parsec.orElse(sepBy1(p, sep), pure(Nil))
+
+    /// One or more `p` separated by `sep`.
+    pub def sepBy1(p: Parser[a], sep: Parser[b]): Parser[List[a]] =
+        flatMap(x ->
+            map(xs -> x :: xs, many(andThen(sep, p))),
+            p
+        )
+
+    /// Fold a left-associative binary operator (for Step 2 arithmetic).
+    pub def chainl1(p: Parser[a], op: Parser[(a, a) -> a]): Parser[a] =
+        flatMap(x ->
+            map(fs -> List.foldLeft((acc, f) -> f(acc), x, fs),
+                many(flatMap(f -> map(y -> (acc -> f(acc, y)), p), op))),
+            p
+        )
 
 }

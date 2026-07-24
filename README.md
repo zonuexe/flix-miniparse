@@ -28,7 +28,10 @@ Full design, module layout, and roadmap: **[docs/design-doc.md](docs/design-doc.
 
 ## Status
 
-**Step 0 done** — core engine, shared combinators, and a postal-code smoke test (`150-0002` / `〒150-0002`). See the [roadmap](docs/design-doc.md#4-implementation-roadmap).
+- **Step 0 done** — core engine, shared combinators, postal-code smoke test
+- **Step 1 done** — `MiniParse.Parsec` / `MiniParse.PEG`, recursive JSON parser
+
+See the [roadmap](docs/design-doc.md#4-implementation-roadmap).
 
 ## Development
 
@@ -48,14 +51,18 @@ src/
   MiniParse.flix           # parent module
   MiniParse/
     Core.flix              # Parser, State, Position, errors
-    Combinator.flix        # map, flatMap, satisfy, char, digit, …
-  Examples.flix
+    Combinator.flix        # map, flatMap, satisfy, ws, sepBy, …
+    Parsec.flix            # orElse, attempt (explicit try)
+    PEG.flix               # choice, & / ! predicates
   Examples/
-    PostalCode.flix        # Step 0 smoke test
-  Main.flix                # demo
+    PostalCode.flix        # Step 0
+    Json.flix              # Step 1
+  Main.flix
 test/
   TestCore.flix
   TestPostalCode.flix
+  TestParsecPEG.flix
+  TestJson.flix
 docs/design-doc.md
 flake.nix
 ```
