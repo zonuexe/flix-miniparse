@@ -9,6 +9,7 @@ artifact/
 lib/
 flix.jar
 *.fpkg
+crash_report_*.txt
 
 # IDE / editor
 .idea/
