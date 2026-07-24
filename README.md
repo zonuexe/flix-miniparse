@@ -33,6 +33,7 @@ Full design, module layout, and roadmap: **[docs/design-doc.md](docs/design-doc.
 - **Step 2 done** — arithmetic precedence; keyword vs identifier (`if` / `ifa`)
 - **Step 3 done** — packrat memoization (`Region` + `MutMap`) and error pretty-printing
 - **Step 4 done** — MiniLang (`let` / `print` / `if` / blocks) integrating expr + keyword boundaries
+- **Step 5 done** — left-recursive packrat growth (`E <- E+n / n` vs right-recursive)
 
 See the [roadmap](docs/design-doc.md#4-implementation-roadmap).
 
@@ -65,6 +66,7 @@ src/
     Expr.flix / Keyword.flix  # Step 2
     Packrat.flix           # Step 3 exponential vs memo
     MiniLang.flix          # Step 4 tiny language
+    LeftRec.flix           # Step 5 left-recursive packrat
   Main.flix
 test/ …
 docs/design-doc.md

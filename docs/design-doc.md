@@ -144,5 +144,6 @@ Progressive steps: implement features, then validate with a concrete target.
 | **2** | Done | Arithmetic precedence; `if` / `ifa` philosophy comparison |
 | **3** | Done | Packrat (`MiniParse.Packrat` + `Examples.Packrat`); `ErrorFormat` |
 | **4** | Done | MiniLang: `let` / `print` / `if`–`then`–`else` / blocks + interpreter |
+| **5** | Done | Left-recursive packrat growth (Warth-style); left vs right assoc |
 
-Optional follow-ups: left-recursive packrat growth, streaming input, richer standard library.
+Optional follow-ups: streaming input, richer standard library, package publish polish.

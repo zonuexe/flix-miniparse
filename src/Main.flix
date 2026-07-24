@@ -6,6 +6,7 @@ def main(): Unit \ IO = {
     use Examples.Keyword.{parseNaiveParsec, parseParsec, parsePeg};
     use Examples.Packrat.{parseNaive, parseMemo};
     use Examples.MiniLang.{runSource};
+    use Examples.LeftRec.{parseLeft, parseRight};
     use MiniParse.ErrorFormat.{formatError};
     use MiniParse.Core.{parse};
     use MiniParse.Combinator.{digit};
@@ -53,6 +54,14 @@ def main(): Unit \ IO = {
         let n = showStats(parseNaive(s));
         let m = showStats(parseMemo(s));
         println("  `${s}` naive=${n}  memo=${m}")
+    };
+
+    println("");
+    println("== Left-recursive packrat (E <- E+n / n) ==");
+    foreach (s <- "1+2+3" :: "10+20+30" :: Nil) {
+        println("  `${s}`");
+        println("    left : ${parseLeft(s)}");
+        println("    right: ${parseRight(s)}")
     };
 
     println("");
