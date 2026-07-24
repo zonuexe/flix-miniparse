@@ -99,6 +99,29 @@ def main(): Unit \ IO = {
     println("  deep orElse abc|abx on ab|x: ${Examples.SuspendDemo.parseAbcOrAbx("ab" :: "x" :: Nil)}");
 
     println("");
+    println("== CoLang (CoParser MiniLang fragment) ==");
+    println("  word if/ifa: ${Examples.CoLang.parseWord("if")} / ${Examples.CoLang.parseWord("ifa")}");
+    println("  program: ${Examples.CoLang.parseProgram("let ifa = 2; print ifa;")}");
+
+    println("");
+    println("== Cost: Stream restart vs Suspend continue ==");
+    let n = 8;
+    let ones = Examples.CostCompare.oneChunks(n);
+    match Examples.CostCompare.streamDigitsCost(n, ones) {
+        case (Ok(_), cs) =>
+            println("  stream  digits(${n}) one-char chunks: ${cs}")
+        case (Err(e), cs) =>
+            println("  stream  error ${e} cost ${cs}")
+    };
+    match Examples.CostCompare.suspendDigitsCost(n, ones) {
+        case (Ok(_), cc) =>
+            println("  suspend digits(${n}) one-char chunks: ${cc}")
+        case (Err(e), cc) =>
+            println("  suspend error ${e} cost ${cc}")
+    };
+    println("  (charVisits: stream ~ n(n+1)/2, suspend ~ n)");
+
+    println("");
     println("== MiniLang ==");
     let prog =
         "let ifa = 2;\n" +

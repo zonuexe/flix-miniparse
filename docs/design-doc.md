@@ -148,6 +148,7 @@ Progressive steps: implement features, then validate with a concrete target.
 | **6** | Done | Streaming input: `StreamState`, `feed`/`close`, `step` → Done/Fail/Await |
 | **7** | Done | Standard combinator library expansion (see below) |
 | **8** | Done | Coroutine suspension: `CoParser` free monad + `Await` continuations |
+| **9** | Done | CoLang fragment on CoParser; Stream vs Suspend scan-cost comparison |
 
 Optional follow-ups: package publish polish.
 

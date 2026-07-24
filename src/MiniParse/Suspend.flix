@@ -33,8 +33,11 @@ mod MiniParse.Suspend {
         /// Internal: left branch in progress after a suspension.
         /// `committed` = characters the left branch already consumed since the
         /// choice point (used to rebuild input for the right branch on failure).
-        case Branch(CoParser[a], CoParser[a], Position, String)
+        case Branch(CoParser[a], CoParser[a], Position, String),
         // p1cont, p2, snapPos, committed
+
+        /// Look at the next character **without consuming** it (or EOF).
+        case Peek(Option[Char] -> CoParser[a])
     }
 
     pub def pure(x: a): CoParser[a] =
@@ -65,6 +68,8 @@ mod MiniParse.Suspend {
             CoParser.Choice(map(f, p1), map(f, p2))
         case CoParser.Branch(p1, p2, snap, comm) =>
             CoParser.Branch(map(f, p1), map(f, p2), snap, comm)
+        case CoParser.Peek(k) =>
+            CoParser.Peek(c -> map(f, k(c)))
     }
 
     pub def flatMap(f: a -> CoParser[b], p: CoParser[a]): CoParser[b] = match p {
@@ -78,6 +83,8 @@ mod MiniParse.Suspend {
             CoParser.Choice(flatMap(f, p1), flatMap(f, p2))
         case CoParser.Branch(p1, p2, snap, comm) =>
             CoParser.Branch(flatMap(f, p1), flatMap(f, p2), snap, comm)
+        case CoParser.Peek(k) =>
+            CoParser.Peek(c -> flatMap(f, k(c)))
     }
 
     pub def andThen(p: CoParser[a], q: CoParser[b]): CoParser[b] =
@@ -143,6 +150,58 @@ mod MiniParse.Suspend {
             case None    => CoParser.Pure(())
             case Some(_) => CoParser.Fail("end of input")
         })
+
+    pub def letter(): CoParser[Char] =
+        satisfy(c -> Char.isAscii(c) and Char.isLetter(c), "letter")
+
+    pub def alphaNum(): CoParser[Char] =
+        satisfy(
+            c -> (Char.isAscii(c) and Char.isLetter(c)) or Char.isAsciiDigit(c),
+            "alphanumeric"
+        )
+
+    /// Zero or more. Relies on deep `orElse`: a failing `p` rewinds so the
+    /// alternative `pure(Nil)` can succeed (p must fail on its first mismatch
+    /// in a rewind-safe way — our `satisfy` does).
+    pub def many(p: CoParser[a]): CoParser[List[a]] =
+        orElse(
+            flatMap(x -> map(xs -> x :: xs, many(p)), p),
+            pure(Nil)
+        )
+
+    pub def some(p: CoParser[a]): CoParser[List[a]] =
+        flatMap(x -> map(xs -> x :: xs, many(p)), p)
+
+    /// Peek at the next character (or EOF) without consuming.
+    pub def peek(): CoParser[Option[Char]] =
+        CoParser.Peek(c -> CoParser.Pure(c))
+
+    /// Succeed with `()` iff the next char is **not** accepted by `pred` (or EOF).
+    /// Does not consume.
+    pub def notFollowedByPred(pred: Char -> Bool, label: String): CoParser[Unit] =
+        CoParser.Peek(mc -> match mc {
+            case None => CoParser.Pure(())
+            case Some(c) =>
+                if (pred(c)) CoParser.Fail(label) else CoParser.Pure(())
+        })
+
+    /// Keyword `kw` not followed by an identifier character.
+    pub def keyword(kw: String): CoParser[String] =
+        andThenL(
+            string(kw),
+            notFollowedByPred(
+                c -> (Char.isAscii(c) and Char.isLetter(c)) or Char.isAsciiDigit(c),
+                "keyword boundary"
+            )
+        )
+
+    /// Identifier: letter then alphanumerics (may still match keyword text —
+    /// prefer trying `keyword` first in an `orElse`).
+    pub def ident(): CoParser[String] =
+        flatMap(c0 ->
+            map(cs -> Char.toString(c0) + List.join("", List.map(Char.toString, cs)),
+                many(alphaNum())),
+            letter())
 
     ///////////////////////////////////////////////////////////////////////////
     // Attempt interpreter (immutable buffer ⇒ free rewind)
@@ -214,10 +273,6 @@ mod MiniParse.Suspend {
                 case Attempt.Ok(x, rest, pos1) =>
                     Attempt.Ok(x, rest, pos1)
                 case Attempt.Err(_, _rem, _t1) =>
-                    // p2 sees everything the left branch was offered: committed + t1 + rem
-                    // Here t1 is chars p1 took from `buf` before failing; rem is leftover.
-                    // Full since choice = committed (before this resume) + t1 + rem
-                    // But `buf` was the chunk at resume = t1 + rem, so committed + buf.
                     attempt(p2, committed + buf, snapPos, eof, "")
                 case Attempt.Need(p1c, pos1, t1) =>
                     Attempt.Need(
@@ -225,6 +280,17 @@ mod MiniParse.Suspend {
                         pos1,
                         committed + t1
                     )
+            }
+
+        case CoParser.Peek(k) =>
+            match String.nth(0, buf) {
+                case Some(c) =>
+                    attempt(k(Some(c)), buf, pos, eof, took)
+                case None =>
+                    if (eof)
+                        attempt(k(None), buf, pos, true, took)
+                    else
+                        Attempt.Need(p, pos, took)
             }
     }
 

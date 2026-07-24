@@ -37,6 +37,7 @@ Full design, module layout, and roadmap: **[docs/design-doc.md](docs/design-doc.
 - **Step 6 done** — streaming / chunked input (`MiniParse.Stream`: feed, Await, drive)
 - **Step 7 done** — expanded standard combinators (`oneOf`, `manyTill`, `sepEndBy`, `chainr1`, …)
 - **Step 8 done** — coroutine suspension (`CoParser`) + **deep-backtracking `orElse`** (rewind after consume)
+- **Step 9 done** — CoLang (keyword/`ifa` on CoParser) + Stream vs Suspend cost comparison
 
 See the [roadmap](docs/design-doc.md#4-implementation-roadmap).
 
