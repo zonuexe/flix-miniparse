@@ -149,7 +149,14 @@ Progressive steps: implement features, then validate with a concrete target.
 | **7** | Done | Standard combinator library expansion (see below) |
 | **8** | Done | Coroutine suspension: `CoParser` free monad + `Await` continuations |
 
-Optional follow-ups: package publish polish, deeper backtracking under suspension.
+Optional follow-ups: package publish polish.
+
+### Deep backtrack under suspension
+
+`orElse(p1, p2)` = `Choice(p1, p2)`. The attempt interpreter runs `p1` on an
+immutable buffer; failure retries `p2` on the **original** buffer (deep rewind).
+If `p1` suspends, a `Branch` frame keeps `p2` and the character log so a later
+failure still rebuilds input for `p2` (`committed ++ remaining`).
 
 ### Suspension notes (Step 8)
 

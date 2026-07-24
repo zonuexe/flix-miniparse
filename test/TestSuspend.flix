@@ -1,8 +1,8 @@
 mod TestSuspend {
 
     use MiniParse.Suspend.{
-        pure, char, digit, digits, string, andThen, map, flatMap, eof,
-        start, startWith, feed, close, pump, parseChunks, drive, countSuspends,
+        pure, char, digit, digits, string, andThen, andThenL, map, flatMap, eof,
+        orElse, start, startWith, feed, close, pump, parseChunks, drive, countSuspends,
         Outcome, Event, Suspended
     }
     use MiniParse.Core.{initialPosition}
@@ -120,4 +120,62 @@ mod TestSuspend {
     def testIncompleteFailsAfterClose(): Unit \ Assert =
         Assert.assertTrue(Result.isErr(parseChunks(digits(3), "12" :: Nil)))
 
+    ///////////////////////////////////////////////////////////////////////////
+    // Deep backtracking orElse
+    ///////////////////////////////////////////////////////////////////////////
+
+    @Test
+    def testOrElseSecondBranch(): Unit \ Assert = {
+        // Left consumes 'a' then fails on 'c' vs 'b'; right matches "ac".
+        let p = orElse(string("ab"), string("ac"));
+        Assert.assertEq(expected = Ok("ac"), parseChunks(p, "ac" :: Nil))
+    }
+
+    @Test
+    def testOrElseFirstWins(): Unit \ Assert = {
+        let p = orElse(string("ab"), string("ac"));
+        Assert.assertEq(expected = Ok("ab"), parseChunks(p, "ab" :: Nil))
+    }
+
+    @Test
+    def testOrElseDeepPrefix(): Unit \ Assert = {
+        // Classic: "if" is prefix of "ifa" — without rewind, left wins then fails at eof.
+        let p = orElse(andThenL(string("if"), eof()), string("ifa"));
+        Assert.assertEq(expected = Ok("ifa"), parseChunks(p, "ifa" :: Nil))
+    }
+
+    @Test
+    def testOrElseAcrossChunks(): Unit \ Assert = {
+        // Left tries "abc", suspends after "ab", then fails on 'x'; right is "abx".
+        let p = orElse(string("abc"), string("abx"));
+        Assert.assertEq(
+            expected = Ok("abx"),
+            parseChunks(p, "ab" :: "x" :: Nil)
+        )
+    }
+
+    @Test
+    def testOrElseNested(): Unit \ Assert = {
+        let p = orElse(string("aa"), orElse(string("ab"), string("ac")));
+        Assert.assertEq(expected = Ok("ac"), parseChunks(p, "ac" :: Nil))
+    }
+
+    @Test
+    def testOrElseBothFail(): Unit \ Assert = {
+        let p = orElse(string("aa"), string("bb"));
+        Assert.assertTrue(Result.isErr(parseChunks(p, "cc" :: Nil)))
+    }
+
+    @Test
+    def testKeywordStyleIfa(): Unit \ Assert = {
+        // Simulate naive keyword "if" vs ident "ifa" with deep backtrack.
+        let kwIf = andThenL(string("if"), eof());
+        let ident = string("ifa");
+        Assert.assertEq(
+            expected = Ok("ifa"),
+            parseChunks(orElse(kwIf, ident), "ifa" :: Nil)
+        )
+    }
+
 }
+

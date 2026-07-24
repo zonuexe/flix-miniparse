@@ -95,6 +95,8 @@ def main(): Unit \ IO = {
             println("  error: ${e}");
             println("  events: ${ev}")
     };
+    println("  deep orElse if|ifa on \"ifa\": ${Examples.SuspendDemo.parseIfOrIfa("ifa" :: Nil)}");
+    println("  deep orElse abc|abx on ab|x: ${Examples.SuspendDemo.parseAbcOrAbx("ab" :: "x" :: Nil)}");
 
     println("");
     println("== MiniLang ==");

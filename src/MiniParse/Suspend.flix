@@ -1,18 +1,19 @@
 ///
-/// Coroutine-style *suspendable* parsers.
+/// Coroutine-style *suspendable* parsers with **deep backtracking**.
 ///
 /// Contrast with `MiniParse.Stream`:
-/// - **Stream** wraps a pure `Parser` and, on `Await`, **restarts** it from the
-///   saved cursor over the whole buffer (no call-stack capture).
-/// - **Suspend** reifies the parser as a free/coroutine program (`CoParser`)
-///   that **requests one character at a time**. When input runs out mid-parse,
-///   the remaining `Read` continuation is stored and resumed on the next chunk
-///   — true suspension of the parse "stack" (as a data structure).
+/// - **Stream** restarts a pure `Parser` from the cursor on `Await`.
+/// - **Suspend** stores a `Read` continuation (true suspension).
 ///
-/// ```text
-///   CoParser  --pump-->  Done | Fail | Await(Suspended)
-///   Suspended --feed-->  pump again from the same Read
-/// ```
+/// ## Deep `orElse` / `Choice`
+///
+/// `orElse(p1, p2)` is reified as `Choice(p1, p2)`. The interpreter runs `p1`
+/// against an immutable buffer snapshot. If `p1` fails after consuming input,
+/// `p2` is retried on the **original** buffer (deep backtrack / rewind).
+///
+/// If `p1` suspends mid-way, a `Branch` frame remembers `p2` and every character
+/// committed so far; a later failure still rewinds and runs `p2` on
+/// `committed ++ remaining`.
 ///
 mod MiniParse.Suspend {
 
@@ -22,14 +23,18 @@ mod MiniParse.Suspend {
     // Free / coroutine parser
     ///////////////////////////////////////////////////////////////////////////
 
-    /// A parser as a small free monad over character reads.
-    ///
-    /// - `Pure` / `Fail` — finished
-    /// - `Read(k)` — need the next character (`Some`) or EOF (`None`)
+    /// Free program over character reads, with structural choice.
     pub enum CoParser[a] {
         case Pure(a),
         case Fail(String),
-        case Read(Option[Char] -> CoParser[a])
+        case Read(Option[Char] -> CoParser[a]),
+        /// Ordered choice with deep backtrack on failure of the left branch.
+        case Choice(CoParser[a], CoParser[a]),
+        /// Internal: left branch in progress after a suspension.
+        /// `committed` = characters the left branch already consumed since the
+        /// choice point (used to rebuild input for the right branch on failure).
+        case Branch(CoParser[a], CoParser[a], Position, String)
+        // p1cont, p2, snapPos, committed
     }
 
     pub def pure(x: a): CoParser[a] =
@@ -38,16 +43,41 @@ mod MiniParse.Suspend {
     pub def fail(expected: String): CoParser[a] =
         CoParser.Fail(expected)
 
+    /// Deep-backtracking choice (Parsec `<|>` with automatic try on the left).
+    pub def orElse(p1: CoParser[a], p2: CoParser[a]): CoParser[a] =
+        CoParser.Choice(p1, p2)
+
+    /// Multi-way ordered choice.
+    pub def choice(ps: List[CoParser[a]]): CoParser[a] = match ps {
+        case Nil         => fail("empty choice")
+        case p :: Nil    => p
+        case p :: q :: r => orElse(p, choice(q :: r))
+    }
+
     pub def map(f: a -> b, p: CoParser[a]): CoParser[b] = match p {
-        case CoParser.Pure(x) => CoParser.Pure(f(x))
-        case CoParser.Fail(e) => CoParser.Fail(e)
-        case CoParser.Read(k) => CoParser.Read(c -> map(f, k(c)))
+        case CoParser.Pure(x) =>
+            CoParser.Pure(f(x))
+        case CoParser.Fail(e) =>
+            CoParser.Fail(e)
+        case CoParser.Read(k) =>
+            CoParser.Read(c -> map(f, k(c)))
+        case CoParser.Choice(p1, p2) =>
+            CoParser.Choice(map(f, p1), map(f, p2))
+        case CoParser.Branch(p1, p2, snap, comm) =>
+            CoParser.Branch(map(f, p1), map(f, p2), snap, comm)
     }
 
     pub def flatMap(f: a -> CoParser[b], p: CoParser[a]): CoParser[b] = match p {
-        case CoParser.Pure(x) => f(x)
-        case CoParser.Fail(e) => CoParser.Fail(e)
-        case CoParser.Read(k) => CoParser.Read(c -> flatMap(f, k(c)))
+        case CoParser.Pure(x) =>
+            f(x)
+        case CoParser.Fail(e) =>
+            CoParser.Fail(e)
+        case CoParser.Read(k) =>
+            CoParser.Read(c -> flatMap(f, k(c)))
+        case CoParser.Choice(p1, p2) =>
+            CoParser.Choice(flatMap(f, p1), flatMap(f, p2))
+        case CoParser.Branch(p1, p2, snap, comm) =>
+            CoParser.Branch(flatMap(f, p1), flatMap(f, p2), snap, comm)
     }
 
     pub def andThen(p: CoParser[a], q: CoParser[b]): CoParser[b] =
@@ -108,7 +138,6 @@ mod MiniParse.Suspend {
     pub def digits(n: Int32): CoParser[String] =
         map(cs -> List.join("", List.map(Char.toString, cs)), count(n, digit()))
 
-    /// End of input: next read must be EOF.
     pub def eof(): CoParser[Unit] =
         CoParser.Read(mc -> match mc {
             case None    => CoParser.Pure(())
@@ -116,22 +145,103 @@ mod MiniParse.Suspend {
         })
 
     ///////////////////////////////////////////////////////////////////////////
-    // Driver: pump / feed / close
+    // Attempt interpreter (immutable buffer ⇒ free rewind)
     ///////////////////////////////////////////////////////////////////////////
 
-    /// Suspended continuation waiting for the next character (or EOF).
+    /// Result of trying a branch without committing to the outer stream.
+    enum Attempt[a] {
+        case Ok(a, String, Position),
+        /// Failed; `rem` is unconsumed input, `took` is what this attempt consumed.
+        case Err(ParseError, String, String),
+        /// Need more input; `took` is what was consumed since the attempt began.
+        case Need(CoParser[a], Position, String)
+    }
+
+    def mkErr(pos: Position, exp: String): ParseError =
+        ParseError.Error(pos, exp :: Nil)
+
+    def appendChar(s: String, c: Char): String =
+        s + Char.toString(c)
+
+    /// Interpret `p` against `buf`. `took` accumulates characters this attempt
+    /// has already consumed (for choice rewind).
+    def attempt(
+        p: CoParser[a],
+        buf: String,
+        pos: Position,
+        eof: Bool,
+        took: String
+    ): Attempt[a] = match p {
+        case CoParser.Pure(x) =>
+            Attempt.Ok(x, buf, pos)
+
+        case CoParser.Fail(exp) =>
+            Attempt.Err(mkErr(pos, exp), buf, took)
+
+        case CoParser.Read(k) =>
+            match String.nth(0, buf) {
+                case Some(c) => {
+                    let rest = String.dropLeft(1, buf);
+                    let pos1 = advancePosition(c, pos);
+                    attempt(k(Some(c)), rest, pos1, eof, appendChar(took, c))
+                }
+                case None =>
+                    if (eof)
+                        attempt(k(None), "", pos, true, took)
+                    else
+                        Attempt.Need(p, pos, took)
+            }
+
+        case CoParser.Choice(p1, p2) =>
+            // Deep backtrack: on failure of p1, retry p2 on the *same* buf/pos.
+            match attempt(p1, buf, pos, eof, "") {
+                case Attempt.Ok(x, rest, pos1) =>
+                    Attempt.Ok(x, rest, pos1)
+                case Attempt.Err(_, _, _) =>
+                    attempt(p2, buf, pos, eof, "")
+                case Attempt.Need(p1c, pos1, t1) =>
+                    // Suspend left branch; remember p2 + chars already taken from buf.
+                    Attempt.Need(
+                        CoParser.Branch(p1c, p2, pos, t1),
+                        pos1,
+                        t1
+                    )
+            }
+
+        case CoParser.Branch(p1, p2, snapPos, committed) =>
+            // Resume left branch; on failure rebuild full input since choice.
+            match attempt(p1, buf, pos, eof, "") {
+                case Attempt.Ok(x, rest, pos1) =>
+                    Attempt.Ok(x, rest, pos1)
+                case Attempt.Err(_, _rem, _t1) =>
+                    // p2 sees everything the left branch was offered: committed + t1 + rem
+                    // Here t1 is chars p1 took from `buf` before failing; rem is leftover.
+                    // Full since choice = committed (before this resume) + t1 + rem
+                    // But `buf` was the chunk at resume = t1 + rem, so committed + buf.
+                    attempt(p2, committed + buf, snapPos, eof, "")
+                case Attempt.Need(p1c, pos1, t1) =>
+                    Attempt.Need(
+                        CoParser.Branch(p1c, p2, snapPos, committed + t1),
+                        pos1,
+                        committed + t1
+                    )
+            }
+    }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Public driver
+    ///////////////////////////////////////////////////////////////////////////
+
+    /// Suspended machine: remaining program + position.
+    /// (`took` is only meaningful inside Branch nodes of the program.)
     pub enum Suspended[a] {
-        case Suspended(Option[Char] -> CoParser[a], Position)
+        case Suspended(CoParser[a], Position)
     }
 
     pub def suspendedPos(s: Suspended[a]): Position = match s {
-        case Suspended.Suspended(_k, pos) => pos
+        case Suspended.Suspended(_p, pos) => pos
     }
 
-    /// Outcome of driving a `CoParser` against a buffer.
-    ///
-    /// Manual `ToString` (not derived): `Suspended` holds a continuation function,
-    /// which cannot participate in derived `ToString`.
     pub enum Outcome[a] {
         case Done(a, String),
         case Fail(ParseError),
@@ -154,27 +264,17 @@ mod MiniParse.Suspend {
         case _                => false
     }
 
-    /// Interpret `p` against `buf`. Empty buffer + `eof` delivers `None` to `Read`.
+    def outcomeOf(a: Attempt[a]): Outcome[a] = match a {
+        case Attempt.Ok(x, rest, _) =>
+            Outcome.Done(x, rest)
+        case Attempt.Err(e, _, _) =>
+            Outcome.Fail(e)
+        case Attempt.Need(p, pos, _) =>
+            Outcome.Await(Suspended.Suspended(p, pos))
+    }
+
     pub def pump(p: CoParser[a], buf: String, pos: Position, eof: Bool): Outcome[a] =
-        match p {
-            case CoParser.Pure(x) =>
-                Outcome.Done(x, buf)
-            case CoParser.Fail(exp) =>
-                Outcome.Fail(ParseError.Error(pos, exp :: Nil))
-            case CoParser.Read(k) =>
-                match String.nth(0, buf) {
-                    case Some(c) => {
-                        let rest = String.dropLeft(1, buf);
-                        let pos1 = advancePosition(c, pos);
-                        pump(k(Some(c)), rest, pos1, eof)
-                    }
-                    case None =>
-                        if (eof)
-                            pump(k(None), "", pos, true)
-                        else
-                            Outcome.Await(Suspended.Suspended(k, pos))
-                }
-        }
+        outcomeOf(attempt(p, buf, pos, eof, ""))
 
     pub def start(p: CoParser[a]): Outcome[a] =
         pump(p, "", initialPosition(), false)
@@ -183,16 +283,15 @@ mod MiniParse.Suspend {
         pump(p, buf, initialPosition(), false)
 
     pub def feed(chunk: String, s: Suspended[a]): Outcome[a] = match s {
-        case Suspended.Suspended(k, pos) =>
-            pump(CoParser.Read(k), chunk, pos, false)
+        case Suspended.Suspended(p, pos) =>
+            pump(p, chunk, pos, false)
     }
 
     pub def close(s: Suspended[a]): Outcome[a] = match s {
-        case Suspended.Suspended(k, pos) =>
-            pump(CoParser.Read(k), "", pos, true)
+        case Suspended.Suspended(p, pos) =>
+            pump(p, "", pos, true)
     }
 
-    /// Feed all chunks (suspending as needed), then close, require empty remainder.
     pub def parseChunks(p: CoParser[a], chunks: List[String]): Result[ParseError, a] = {
         def go(cs: List[String], o: Outcome[a]): Result[ParseError, a] = match o {
             case Outcome.Fail(e) =>
@@ -200,9 +299,6 @@ mod MiniParse.Suspend {
             case Outcome.Done(x, rest) =>
                 if (String.isEmpty(rest) and List.isEmpty(cs))
                     Ok(x)
-                else if (not List.isEmpty(cs))
-                    // Parser finished before all chunks were consumed.
-                    Err(ParseError.Error(initialPosition(), "end of input" :: Nil))
                 else
                     Err(ParseError.Error(initialPosition(), "end of input" :: Nil))
             case Outcome.Await(s) =>
@@ -231,9 +327,12 @@ mod MiniParse.Suspend {
     pub enum Event with Eq, ToString {
         case Fed(String),
         case SuspendedAt(Int32),
+        case Backtracked,  // left branch failed after consume; right branch tried
         case Completed,
         case Failed
     }
+
+    // Note: Backtracked is reserved for future tracing; drive records suspend/fed.
 
     pub def drive(
         p: CoParser[a],

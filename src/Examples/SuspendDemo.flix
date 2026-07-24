@@ -9,8 +9,8 @@ mod Examples.SuspendDemo {
     use MiniParse.Core.{ParseError}
     use MiniParse.Suspend.{
         CoParser, Outcome, Event, Suspended,
-        pure, map, flatMap, andThen, char, digits, start, feed, close,
-        parseChunks, drive, countSuspends, startWith
+        pure, map, flatMap, andThen, andThenL, char, digits, string, eof, orElse,
+        start, feed, close, parseChunks, drive, countSuspends, startWith
     }
 
     pub enum Postal with Eq, ToString {
@@ -73,5 +73,19 @@ mod Examples.SuspendDemo {
     /// Fixed three-digit example used to show suspension mid-token.
     pub def threeDigits(): CoParser[String] =
         digits(3)
+
+    /// Deep backtrack demo: try keyword `if` at EOF, else full `ifa`.
+    pub def ifOrIfa(): CoParser[String] =
+        orElse(andThenL(string("if"), eof()), string("ifa"))
+
+    pub def parseIfOrIfa(chunks: List[String]): Result[ParseError, String] =
+        parseChunks(ifOrIfa(), chunks)
+
+    /// Left tries `"abc"` (may suspend), right is `"abx"` — needs deep rewind.
+    pub def abcOrAbx(): CoParser[String] =
+        orElse(string("abc"), string("abx"))
+
+    pub def parseAbcOrAbx(chunks: List[String]): Result[ParseError, String] =
+        parseChunks(abcOrAbx(), chunks)
 
 }

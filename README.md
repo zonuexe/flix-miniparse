@@ -36,7 +36,7 @@ Full design, module layout, and roadmap: **[docs/design-doc.md](docs/design-doc.
 - **Step 5 done** — left-recursive packrat growth (`E <- E+n / n` vs right-recursive)
 - **Step 6 done** — streaming / chunked input (`MiniParse.Stream`: feed, Await, drive)
 - **Step 7 done** — expanded standard combinators (`oneOf`, `manyTill`, `sepEndBy`, `chainr1`, …)
-- **Step 8 done** — coroutine suspension (`MiniParse.Suspend` / `CoParser` free monad)
+- **Step 8 done** — coroutine suspension (`CoParser`) + **deep-backtracking `orElse`** (rewind after consume)
 
 See the [roadmap](docs/design-doc.md#4-implementation-roadmap).
 
