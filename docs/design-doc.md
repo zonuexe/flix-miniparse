@@ -142,5 +142,6 @@ Progressive steps: implement features, then validate with a concrete target.
 | **0** | Done | Core + combinators; postal-code smoke test |
 | **1** | Done | Parsec/PEG fronts; recursive JSON |
 | **2** | Done | Arithmetic precedence; `if` / `ifa` philosophy comparison |
+| **3** | Done | Packrat (`MiniParse.Packrat` + `Examples.Packrat`); `ErrorFormat` |
 
-Optional follow-ups: packrat memoization (`Region` + `MutMap`), richer error pretty-printing, a small statement language.
+Optional follow-ups: left-recursive packrat growth, a small statement language, streaming input.
