@@ -11,9 +11,11 @@ flix.jar
 *.fpkg
 crash_report_*.txt
 
-# IDE / editor
+# OS / editor
 .idea/
 .vscode/
 *.swp
 *~
 .DS_Store
+.history/
+*.orig

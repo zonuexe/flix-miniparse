@@ -150,7 +150,21 @@ Progressive steps: implement features, then validate with a concrete target.
 | **8** | Done | Coroutine suspension: `CoParser` free monad + `Await` continuations |
 | **9** | Done | CoLang fragment on CoParser; Stream vs Suspend scan-cost comparison |
 
-Optional follow-ups: package publish polish.
+Optional follow-ups: publish a SemVer git tag for `github:zonuexe/flix-miniparse`,
+further handler-style effects docs.
+
+## 6. Package layout (consumer view)
+
+| Path | Role |
+| --- | --- |
+| `src/MiniParse/**` | **Library** — depend on these modules |
+| `src/Examples/**` | Labs / demos — copy patterns, do not treat as API |
+| `src/Main.flix` | `flix run` tour |
+| `test/**` | Automated tests |
+| `docs/overview.md` | Short consumer map |
+| `docs/design-doc.md` | This design history |
+| `CHANGELOG.md` | Release notes |
+| `flix.toml` | Package `miniparse` |
 
 ### Deep backtrack under suspension
 

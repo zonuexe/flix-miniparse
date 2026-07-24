@@ -1,5 +1,5 @@
 {
-  description = "flix-miniparse: educational PEG/parsec library for Flix";
+  description = "flix-miniparse (miniparse): educational Flix parser combinators";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";

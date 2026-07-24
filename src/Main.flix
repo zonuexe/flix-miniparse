@@ -1,4 +1,9 @@
-/// Demo entry: all roadmap examples.
+///
+/// Package tour for `flix run`.
+///
+/// Walks the educational labs under `Examples.*`. Library code lives in
+/// `MiniParse.*` — see README.md and docs/overview.md.
+///
 def main(): Unit \ IO = {
     use Examples.PostalCode.{parsePostalCode, format};
     use Examples.Json.{parseJson};
