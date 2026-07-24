@@ -70,7 +70,7 @@ use MiniParse.Suspend.{string, orElse, parseChunks, keyword, ident}
 | `CoLang` | MiniLang fragment on `CoParser` |
 | `CostCompare` | charVisits: Stream ~ n²/2 vs Suspend ~ n |
 
-Run everything with `flix run` (see `src/Main.flix`).
+Run everything with `flix run` (see root `Main.flix`; labs live under `test/Examples/`).
 
 ## Design depth
 

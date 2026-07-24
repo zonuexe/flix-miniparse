@@ -96,16 +96,18 @@ flix run    # prints a tour of the labs
 flix-miniparse/
 ├── flix.toml              # package manifest (name: miniparse)
 ├── flake.nix              # reproducible Flix + JDK 21 shell
+├── Main.flix              # flix run tour
 ├── src/
-│   ├── MiniParse/         # library
-│   ├── Examples/          # labs / demos
-│   └── Main.flix          # flix run tour
-├── test/                  # flix test
+│   └── MiniParse/         # library (published in fpkg)
+├── test/
+│   ├── Examples/          # labs / demos (not shipped in fpkg)
+│   └── Test*.flix         # flix test
 ├── docs/
 │   ├── overview.md        # API map for consumers
 │   └── design-doc.md      # architecture & roadmap
 ├── CHANGELOG.md
-└── LICENSE
+├── LICENSE
+└── LICENSE.md             # copy for flix build-pkg
 ```
 
 ## Development

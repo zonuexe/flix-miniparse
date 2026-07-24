@@ -62,14 +62,15 @@ Responsibilities:
 ## 3. Module and directory layout
 
 ```text
+Main.flix             // flix run tour (not shipped in fpkg)
 src/
   MiniParse/
     Core.flix         // Parser type, position, furthest-error tracking
     Combinator.flix   // map, flatMap, satisfy, and other shared operators
     Parsec.flix       // Parsec-style API (try-required model)
     PEG.flix          // PEG-style API (auto-backtrack & predicates)
-  Main.flix           // Samples / demos
 test/
+  Examples/           // Labs / demos (not shipped in fpkg)
   ...                 // Unit and integration tests
 docs/
   design-doc.md       // This document
@@ -157,14 +158,15 @@ further handler-style effects docs.
 
 | Path | Role |
 | --- | --- |
-| `src/MiniParse/**` | **Library** — depend on these modules |
-| `src/Examples/**` | Labs / demos — copy patterns, do not treat as API |
-| `src/Main.flix` | `flix run` tour |
+| `src/MiniParse/**` | **Library** — depend on these modules (shipped in fpkg) |
+| `Main.flix` | `flix run` tour (repo only; not shipped in fpkg) |
+| `test/Examples/**` | Labs / demos — copy patterns, do not treat as API (not shipped) |
 | `test/**` | Automated tests |
 | `docs/overview.md` | Short consumer map |
 | `docs/design-doc.md` | This design history |
 | `CHANGELOG.md` | Release notes |
 | `flix.toml` | Package `miniparse` |
+| `LICENSE.md` | License text packed into the fpkg |
 
 ### Deep backtrack under suspension
 

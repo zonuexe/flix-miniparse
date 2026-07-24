@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+### Changed
+
+- Moved demo modules out of the published package so consumers no longer pull `Main` or `Examples` from the fpkg.
+
 ## [0.1.0] - 2026-07-25
 
 First educational release of **miniparse** (`flix-miniparse`): a Flix lab for learning parser combinators, Parsec- versus PEG-style backtracking, packrat memoization, streaming, and suspendable parsers.
