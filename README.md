@@ -36,6 +36,7 @@ Full design, module layout, and roadmap: **[docs/design-doc.md](docs/design-doc.
 - **Step 5 done** — left-recursive packrat growth (`E <- E+n / n` vs right-recursive)
 - **Step 6 done** — streaming / chunked input (`MiniParse.Stream`: feed, Await, drive)
 - **Step 7 done** — expanded standard combinators (`oneOf`, `manyTill`, `sepEndBy`, `chainr1`, …)
+- **Step 8 done** — coroutine suspension (`MiniParse.Suspend` / `CoParser` free monad)
 
 See the [roadmap](docs/design-doc.md#4-implementation-roadmap).
 
@@ -62,7 +63,8 @@ src/
     PEG.flix               # choice, & / ! predicates
     Packrat.flix           # Region + MutMap memoize helpers
     ErrorFormat.flix       # caret-style error messages
-    Stream.flix            # chunked input, Await / Done / Fail
+    Stream.flix            # chunked input (restart-style)
+    Suspend.flix           # CoParser coroutine suspension
   Examples/
     PostalCode.flix        # Step 0
     Json.flix              # Step 1
@@ -71,6 +73,7 @@ src/
     MiniLang.flix          # Step 4 tiny language
     LeftRec.flix           # Step 5 left-recursive packrat
     StreamDemo.flix        # Step 6 chunked postal / JSON
+    SuspendDemo.flix       # Step 8 true suspension
   Main.flix
 test/ …
 docs/design-doc.md

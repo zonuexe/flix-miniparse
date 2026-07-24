@@ -147,8 +147,20 @@ Progressive steps: implement features, then validate with a concrete target.
 | **5** | Done | Left-recursive packrat growth (Warth-style); left vs right assoc |
 | **6** | Done | Streaming input: `StreamState`, `feed`/`close`, `step` → Done/Fail/Await |
 | **7** | Done | Standard combinator library expansion (see below) |
+| **8** | Done | Coroutine suspension: `CoParser` free monad + `Await` continuations |
 
-Optional follow-ups: true parser suspension (coroutines), package publish polish.
+Optional follow-ups: package publish polish, deeper backtracking under suspension.
+
+### Suspension notes (Step 8)
+
+| Layer | On short input | Resume |
+| --- | --- | --- |
+| `MiniParse.Stream` | `Await` + **restart** pure `Parser` from cursor | re-run whole parser |
+| `MiniParse.Suspend` | `Await(Suspended(k, pos))` | call `k(Some(c))` — **same** stack |
+
+`CoParser` is a free program over `Read: Option[Char] -> CoParser[a]`. The driver
+`pump` interprets it against a buffer; when the buffer is empty the pending
+`Read` continuation is stored, not discarded.
 
 ### Standard combinators (Step 7 additions)
 
