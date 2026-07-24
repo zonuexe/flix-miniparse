@@ -146,8 +146,20 @@ Progressive steps: implement features, then validate with a concrete target.
 | **4** | Done | MiniLang: `let` / `print` / `if`–`then`–`else` / blocks + interpreter |
 | **5** | Done | Left-recursive packrat growth (Warth-style); left vs right assoc |
 | **6** | Done | Streaming input: `StreamState`, `feed`/`close`, `step` → Done/Fail/Await |
+| **7** | Done | Standard combinator library expansion (see below) |
 
-Optional follow-ups: richer standard library, true parser suspension (coroutines), package publish polish.
+Optional follow-ups: true parser suspension (coroutines), package publish polish.
+
+### Standard combinators (Step 7 additions)
+
+| Group | Combinators |
+| --- | --- |
+| Characters | `anyChar`, `oneOf`, `noneOf`, `hexDigit`, `endOfLine`, `takeWhile`/`takeWhile1` |
+| Lookahead | `lookAhead`, `notFollowedBy` |
+| Skip / value | `void`, `replace`, `option`, `skipMany`/`skipSome` |
+| Lists | `manyTill`, `endBy`/`endBy1`, `sepEndBy`/`sepEndBy1`, `many1` |
+| Folding | `chainr1` (with existing `chainl1`) |
+| Other | `filter` |
 
 ### Streaming notes (Step 6)
 

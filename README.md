@@ -35,6 +35,7 @@ Full design, module layout, and roadmap: **[docs/design-doc.md](docs/design-doc.
 - **Step 4 done** — MiniLang (`let` / `print` / `if` / blocks) integrating expr + keyword boundaries
 - **Step 5 done** — left-recursive packrat growth (`E <- E+n / n` vs right-recursive)
 - **Step 6 done** — streaming / chunked input (`MiniParse.Stream`: feed, Await, drive)
+- **Step 7 done** — expanded standard combinators (`oneOf`, `manyTill`, `sepEndBy`, `chainr1`, …)
 
 See the [roadmap](docs/design-doc.md#4-implementation-roadmap).
 

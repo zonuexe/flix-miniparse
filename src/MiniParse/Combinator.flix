@@ -220,4 +220,169 @@ mod MiniParse.Combinator {
             p
         )
 
+    /// Fold a right-associative binary operator.
+    pub def chainr1(p: Parser[a], op: Parser[(a, a) -> a]): Parser[a] =
+        flatMap(x ->
+            MiniParse.Parsec.orElse(
+                flatMap(f -> map(y -> f(x, y), chainr1(p, op)), op),
+                pure(x)
+            ),
+            p
+        )
+
+    ///////////////////////////////////////////////////////////////////////////
+    // More character primitives
+    ///////////////////////////////////////////////////////////////////////////
+
+    /// Any single character.
+    pub def anyChar(): Parser[Char] =
+        satisfy(_ -> true, "any character")
+
+    /// Character from the set `cs` (each code unit is one candidate).
+    pub def oneOf(cs: String): Parser[Char] =
+        satisfy(c -> charIn(c, cs), "one of `${cs}`")
+
+    /// Character not in the set `cs`.
+    pub def noneOf(cs: String): Parser[Char] =
+        satisfy(c -> not charIn(c, cs), "none of `${cs}`")
+
+    def charIn(c: Char, s: String): Bool = {
+        def loop(i: Int32): Bool =
+            match String.nth(i, s) {
+                case None    => false
+                case Some(d) => if (d == c) true else loop(i + 1)
+            };
+        loop(0)
+    }
+
+    /// ASCII hex digit.
+    pub def hexDigit(): Parser[Char] =
+        satisfy(Char.isHexDigit, "hex digit")
+
+    /// End of line: `\n`, `\r\n`, or `\r`.
+    pub def endOfLine(): Parser[Unit] =
+        MiniParse.Parsec.orElse(
+            map(_ -> (), string("\r\n")),
+            MiniParse.Parsec.orElse(
+                map(_ -> (), char('\n')),
+                map(_ -> (), char('\r'))
+            )
+        )
+
+    /// Zero or more characters matching `pred`, as a string.
+    pub def takeWhile(pred: Char -> Bool): Parser[String] =
+        map(charsToString, many(satisfy(pred, "takeWhile")))
+
+    /// One or more characters matching `pred`, as a string.
+    pub def takeWhile1(pred: Char -> Bool): Parser[String] =
+        map(charsToString, some(satisfy(pred, "takeWhile1")))
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Lookahead, skip, replace
+    ///////////////////////////////////////////////////////////////////////////
+
+    /// Run `p` without consuming input on success (positive lookahead).
+    pub def lookAhead(p: Parser[a]): Parser[a] =
+        mkParser(s0 ->
+            match runParser(p, s0) {
+                case Ok((x, _)) => Ok((x, s0))
+                case Err(e)     => Err(e)
+            }
+        )
+
+    /// Succeed with `()` if `p` fails; never consume (negative lookahead).
+    pub def notFollowedBy(p: Parser[a]): Parser[Unit] =
+        mkParser(s0 ->
+            match runParser(p, s0) {
+                case Ok(_) =>
+                    Err(ParseError.Error(
+                        match s0 { case State.State(_, pos) => pos },
+                        "notFollowedBy" :: Nil
+                    ))
+                case Err(_) =>
+                    Ok(((), s0))
+            }
+        )
+
+    /// Discard the value of `p`.
+    pub def void(p: Parser[a]): Parser[Unit] =
+        map(_ -> (), p)
+
+    /// Run `p` and replace its value with `x`.
+    pub def replace(x: b, p: Parser[a]): Parser[b] =
+        map(_ -> x, p)
+
+    /// `optional(p)` with a default when absent (non-consuming fail only).
+    pub def option(default: a, p: Parser[a]): Parser[a] =
+        map(o -> match o {
+            case Some(x) => x
+            case None    => default
+        }, optional(p))
+
+    /// Zero or more, discarding results.
+    pub def skipMany(p: Parser[a]): Parser[Unit] =
+        void(many(p))
+
+    /// One or more, discarding results.
+    pub def skipSome(p: Parser[a]): Parser[Unit] =
+        void(some(p))
+
+    /// Keep applying `p` until `end` succeeds; `end` is consumed. Collect `p`s.
+    pub def manyTill(p: Parser[a], end: Parser[b]): Parser[List[a]] =
+        mkParser(s0 -> {
+            def loop(s: State, acc: List[a]): Result[ParseError, (List[a], State)] =
+                match runParser(end, s) {
+                    case Ok((_, s1)) =>
+                        Ok((List.reverse(acc), s1))
+                    case Err(_) =>
+                        match runParser(p, s) {
+                            case Ok((x, s1)) =>
+                                if (stateOffset(s1) == stateOffset(s))
+                                    // empty match would loop forever
+                                    Err(ParseError.Error(
+                                        match s { case State.State(_, pos) => pos },
+                                        "manyTill stuck" :: Nil
+                                    ))
+                                else
+                                    loop(s1, x :: acc)
+                            case Err(e) => Err(e)
+                        }
+                };
+            loop(s0, Nil)
+        })
+
+    /// Zero or more `p` each terminated by `sep` (`p sep`)* .
+    pub def endBy(p: Parser[a], sep: Parser[b]): Parser[List[a]] =
+        many(andThenL(p, sep))
+
+    /// One or more `p` each terminated by `sep`.
+    pub def endBy1(p: Parser[a], sep: Parser[b]): Parser[List[a]] =
+        some(andThenL(p, sep))
+
+    /// Zero or more `p` separated and optionally ended by `sep`.
+    ///
+    /// `p (sep p)* sep?` or empty.
+    pub def sepEndBy(p: Parser[a], sep: Parser[b]): Parser[List[a]] =
+        MiniParse.Parsec.orElse(sepEndBy1(p, sep), pure(Nil))
+
+    /// One or more `p` separated and optionally ended by `sep`.
+    pub def sepEndBy1(p: Parser[a], sep: Parser[b]): Parser[List[a]] =
+        flatMap(x ->
+            flatMap(xs ->
+                map(_ -> x :: xs, optional(sep)),
+                many(andThen(sep, p))),
+            p
+        )
+
+    /// Succeed only if `pred` holds on `p`'s result (same position on failure).
+    pub def filter(pred: a -> Bool, label: String, p: Parser[a]): Parser[a] =
+        flatMap(x ->
+            if (pred(x)) pure(x) else fail(label),
+            p
+        )
+
+    /// Alias of `some` (Parsec naming).
+    pub def many1(p: Parser[a]): Parser[List[a]] =
+        some(p)
+
 }
