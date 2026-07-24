@@ -30,6 +30,7 @@ Full design, module layout, and roadmap: **[docs/design-doc.md](docs/design-doc.
 
 - **Step 0 done** — core engine, shared combinators, postal-code smoke test
 - **Step 1 done** — `MiniParse.Parsec` / `MiniParse.PEG`, recursive JSON parser
+- **Step 2 done** — arithmetic precedence; keyword vs identifier (`if` / `ifa`) comparing Parsec `attempt` vs PEG `!`
 
 See the [roadmap](docs/design-doc.md#4-implementation-roadmap).
 
@@ -57,12 +58,16 @@ src/
   Examples/
     PostalCode.flix        # Step 0
     Json.flix              # Step 1
+    Expr.flix              # Step 2 arithmetic
+    Keyword.flix           # Step 2 if vs ifa (Parsec vs PEG)
   Main.flix
 test/
   TestCore.flix
   TestPostalCode.flix
   TestParsecPEG.flix
   TestJson.flix
+  TestExpr.flix
+  TestKeyword.flix
 docs/design-doc.md
 flake.nix
 ```

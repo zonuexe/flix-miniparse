@@ -72,6 +72,14 @@ mod MiniParse.Combinator {
     pub def digit(): Parser[Char] =
         satisfy(Char.isAsciiDigit, "digit")
 
+    /// Match an ASCII letter (`A`–`Z`, `a`–`z`).
+    pub def letter(): Parser[Char] =
+        satisfy(c -> Char.isAscii(c) and Char.isLetter(c), "letter")
+
+    /// Letter or digit (ASCII letter or digit).
+    pub def alphaNum(): Parser[Char] =
+        satisfy(c -> (Char.isAscii(c) and Char.isLetter(c)) or Char.isAsciiDigit(c), "alphanumeric")
+
     /// Match end of input.
     pub def eof(): Parser[Unit] =
         mkParser(s -> match s {

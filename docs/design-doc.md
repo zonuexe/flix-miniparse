@@ -135,8 +135,12 @@ Progressive steps: implement features, then validate with a concrete target.
 | **Targets** | Precedence/associativity (`1 + 2 * 3`); identifiers vs keywords (`if` vs `ifa`). |
 | **Checks** | Stress of placing `try` under Parsec vs automatic backtrack and `!` under PEG. |
 
-## 5. Next implementation tasks
+## 5. Implementation status
 
-1. **Step 0:** Define `MiniParse.Core` (`Parser`, state, errors) and primitives (`char`, `digit`, `satisfy`, …).
-2. Write a postal-code parser and tests proving the shared core works end-to-end.
-3. Only then layer Parsec/PEG differences and move to Steps 1–2.
+| Step | Status | Notes |
+| --- | --- | --- |
+| **0** | Done | Core + combinators; postal-code smoke test |
+| **1** | Done | Parsec/PEG fronts; recursive JSON |
+| **2** | Done | Arithmetic precedence; `if` / `ifa` philosophy comparison |
+
+Optional follow-ups: packrat memoization (`Region` + `MutMap`), richer error pretty-printing, a small statement language.
