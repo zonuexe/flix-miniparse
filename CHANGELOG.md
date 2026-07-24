@@ -1,30 +1,30 @@
 # Changelog
 
-All notable changes to **miniparse** (`flix-miniparse`) are documented here.
+All notable changes to this project are documented in this file.
 
-Format inspired by [Keep a Changelog](https://keepachangelog.com/). Versioning follows SemVer for the package name `miniparse`.
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.1.0] — 2026-07-25
+## [Unreleased]
 
-Initial public-shaped release of the educational lab.
+## [0.1.0] - 2026-07-25
 
-### Library (`MiniParse.*`)
+First educational release of **miniparse** (`flix-miniparse`): a Flix lab for learning parser combinators, Parsec- versus PEG-style backtracking, packrat memoization, streaming, and suspendable parsers.
 
-- **Core** — pure `Parser`, positions, furthest-style `ParseError`, `parse` / `parsePartial`
-- **Combinator** — standard combinators including `sepBy`, `chainl1`/`chainr1`, `manyTill`, `oneOf`, …
-- **Parsec** — `orElse`, `attempt` (explicit try)
-- **PEG** — `choice`, `andPredicate`, `notPredicate`
-- **Packrat** — `Region` + `MutMap` table helpers
-- **ErrorFormat** — caret diagnostics
-- **Stream** — chunked feed, restart-style `Await`
-- **Suspend** — `CoParser` free monad, deep-backtracking `orElse`, `Peek` / `keyword`
+### Added
 
-### Labs (`Examples.*`)
+- Pure `MiniParse.Core` engine with `Parser`, positions, parse errors, and full or partial `parse` entry points.
+- Shared combinator suite (`map`, `flatMap`, `satisfy`, `many`, `sepBy`, `chainl1` / `chainr1`, `manyTill`, `oneOf`, and related helpers).
+- Parsec-style front-end with commit-on-consume `orElse` and explicit `attempt` (try).
+- PEG-style front-end with automatic ordered choice and `&` / `!` predicates.
+- Packrat table helpers using Flix `Region` and `MutMap`, plus a demo of exponential versus memoized body counts.
+- Left-recursive packrat growth (Warth-style) so additive expressions associate left, with a right-recursive control grammar for contrast.
+- Caret-style error formatting with line and column context.
+- Chunked streaming adapter that reports `Await` / `Done` / `Fail` by restarting a pure parser from the cursor.
+- Suspendable `CoParser` free monad that resumes a stored continuation instead of restarting the whole parse.
+- Deep-backtracking `orElse` on `CoParser` that rewinds consumed input (including across chunk boundaries) before trying the next alternative.
+- Keyword and identifier helpers on `CoParser` (`Peek`, `keyword`, `ident`) so `if` and `ifa` are distinguished correctly.
+- Educational example grammars: postal codes, JSON, arithmetic, keyword boundary, MiniLang, CoLang, streaming demos, and Stream versus Suspend scan-cost comparison.
+- Nix flake development shell (Flix 0.75.1 and JDK 21), GitHub Actions CI, EditorConfig, package docs (`README`, `docs/overview.md`, `docs/design-doc.md`).
 
-Postal codes, JSON, arithmetic, keyword boundaries, packrat / left-recursion, MiniLang, streaming demos, CoLang, Stream vs Suspend cost comparison.
-
-### Tooling
-
-- Nix flake dev shell (Flix 0.75.1 + JDK 21)
-- GitHub Actions build/test workflow
-- EditorConfig for Flix sources
+[Unreleased]: https://github.com/zonuexe/flix-miniparse/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/zonuexe/flix-miniparse/releases/tag/v0.1.0
