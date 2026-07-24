@@ -1,10 +1,11 @@
-/// Demo: postal codes, JSON, arithmetic, keywords, packrat, error formatting.
+/// Demo entry: all roadmap examples.
 def main(): Unit \ IO = {
     use Examples.PostalCode.{parsePostalCode, format};
     use Examples.Json.{parseJson};
     use Examples.Expr.{parseExpr, parseEval};
     use Examples.Keyword.{parseNaiveParsec, parseParsec, parsePeg};
     use Examples.Packrat.{parseNaive, parseMemo};
+    use Examples.MiniLang.{runSource};
     use MiniParse.ErrorFormat.{formatError};
     use MiniParse.Core.{parse};
     use MiniParse.Combinator.{digit};
@@ -52,6 +53,19 @@ def main(): Unit \ IO = {
         let n = showStats(parseNaive(s));
         let m = showStats(parseMemo(s));
         println("  `${s}` naive=${n}  memo=${m}")
+    };
+
+    println("");
+    println("== MiniLang ==");
+    let prog =
+        "let ifa = 2;\n" +
+        "let y = 3;\n" +
+        "if ifa then print ifa * y; else print 0;\n";
+    println(prog);
+    match runSource(prog) {
+        case Ok(Ok((_env, out))) => println("output = ${out}")
+        case Ok(Err(e))          => println("runtime error: ${e}")
+        case Err(e)              => println("parse error:\n${formatError(prog, e)}")
     };
 
     println("");

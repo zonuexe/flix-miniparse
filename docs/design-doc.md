@@ -143,5 +143,6 @@ Progressive steps: implement features, then validate with a concrete target.
 | **1** | Done | Parsec/PEG fronts; recursive JSON |
 | **2** | Done | Arithmetic precedence; `if` / `ifa` philosophy comparison |
 | **3** | Done | Packrat (`MiniParse.Packrat` + `Examples.Packrat`); `ErrorFormat` |
+| **4** | Done | MiniLang: `let` / `print` / `if`–`then`–`else` / blocks + interpreter |
 
-Optional follow-ups: left-recursive packrat growth, a small statement language, streaming input.
+Optional follow-ups: left-recursive packrat growth, streaming input, richer standard library.

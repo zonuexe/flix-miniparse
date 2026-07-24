@@ -32,6 +32,7 @@ Full design, module layout, and roadmap: **[docs/design-doc.md](docs/design-doc.
 - **Step 1 done** — `MiniParse.Parsec` / `MiniParse.PEG`, recursive JSON parser
 - **Step 2 done** — arithmetic precedence; keyword vs identifier (`if` / `ifa`)
 - **Step 3 done** — packrat memoization (`Region` + `MutMap`) and error pretty-printing
+- **Step 4 done** — MiniLang (`let` / `print` / `if` / blocks) integrating expr + keyword boundaries
 
 See the [roadmap](docs/design-doc.md#4-implementation-roadmap).
 
@@ -63,6 +64,7 @@ src/
     Json.flix              # Step 1
     Expr.flix / Keyword.flix  # Step 2
     Packrat.flix           # Step 3 exponential vs memo
+    MiniLang.flix          # Step 4 tiny language
   Main.flix
 test/ …
 docs/design-doc.md
