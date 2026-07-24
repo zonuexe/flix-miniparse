@@ -28,7 +28,7 @@ Full design, module layout, and roadmap: **[docs/design-doc.md](docs/design-doc.
 
 ## Status
 
-Scaffold and design only. Implementation starts at **Step 0** (postal-code parser as a smoke test). See the [roadmap](docs/design-doc.md#4-implementation-roadmap).
+**Step 0 done** — core engine, shared combinators, and a postal-code smoke test (`150-0002` / `〒150-0002`). See the [roadmap](docs/design-doc.md#4-implementation-roadmap).
 
 ## Development
 
@@ -45,11 +45,19 @@ flix run
 
 ```text
 src/
-  MiniParse/     # library modules (to be added)
-  Main.flix      # demos
-test/            # tests
-docs/design-doc.md # architecture and roadmap
-flake.nix        # Flix + JDK 21 dev shell
+  MiniParse.flix           # parent module
+  MiniParse/
+    Core.flix              # Parser, State, Position, errors
+    Combinator.flix        # map, flatMap, satisfy, char, digit, …
+  Examples.flix
+  Examples/
+    PostalCode.flix        # Step 0 smoke test
+  Main.flix                # demo
+test/
+  TestCore.flix
+  TestPostalCode.flix
+docs/design-doc.md
+flake.nix
 ```
 
 ## License
