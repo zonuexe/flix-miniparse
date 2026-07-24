@@ -32,15 +32,13 @@ Without Nix: JDK 21+ and [Flix 0.75.1](https://github.com/flix/flix/releases).
 
 ### Depend from another Flix project
 
-Once published as a GitHub package (tag matching SemVer):
-
 ```toml
 # flix.toml
 [dependencies]
 "github:zonuexe/flix-miniparse" = "0.1.0"
 ```
 
-Until then, vendor this repo or path-depend via your own workflow. Prefer **`MiniParse.*`** only — treat `Examples.*` as sample code.
+Prefer **`MiniParse.*`** only — treat `Examples.*` as sample code.
 
 ### Minimal pure parse
 
