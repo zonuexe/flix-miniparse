@@ -1,0 +1,29 @@
+# EditorConfig is awesome: https://editorconfig.org/
+
+# top-most EditorConfig file
+root = true
+
+# Unix-style newlines with a newline ending every file
+[*]
+end_of_line = lf
+insert_final_newline = true
+charset = utf-8
+trim_trailing_whitespace = true
+
+# Flix - https://flix.dev/
+# Matches upstream flix/flix and the official Neovim/VS Code defaults:
+# 4 spaces, LF, trailing whitespace trimmed.
+[*.flix]
+indent_style = space
+indent_size = 4
+tab_width = 4
+trim_trailing_whitespace = true
+
+# Flix package manifest
+[flix.toml]
+indent_style = space
+indent_size = 4
+tab_width = 4
+
+[*.md]
+trim_trailing_whitespace = false

@@ -1,0 +1,18 @@
+# Nix
+result
+result-*
+.direnv/
+
+# Flix
+build/
+artifact/
+lib/
+flix.jar
+*.fpkg
+
+# IDE / editor
+.idea/
+.vscode/
+*.swp
+*~
+.DS_Store
