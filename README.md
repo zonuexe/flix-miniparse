@@ -8,7 +8,7 @@
 | --- | --- |
 | **Package** (`flix.toml`) | `miniparse` |
 | **Flix** | 0.75.1+ |
-| **License** | [Apache-2.0](LICENSE) |
+| **License** | [Apache-2.0](LICENSE.md) |
 | **Status** | Lab / learning project — not production middleware |
 
 Implement combinators from scratch and **compare**:
@@ -134,4 +134,4 @@ CI: [`.github/workflows/build-and-test.yaml`](.github/workflows/build-and-test.y
 
 ## License
 
-Copyright contributors; licensed under the Apache License, Version 2.0. See [LICENSE](LICENSE).
+Copyright contributors; licensed under the Apache License, Version 2.0. See [`LICENSE.md`](LICENSE.md) file.
