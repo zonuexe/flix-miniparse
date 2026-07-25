@@ -12,7 +12,7 @@
 /// | `MiniParse.Packrat` | Packrat table helpers (`Region` + `MutMap`) |
 /// | `MiniParse.ErrorFormat` | Caret-style error messages |
 /// | `MiniParse.Stream` | Chunked input, restart-style `Await` |
-/// | `MiniParse.Suspend` | Coroutine `CoParser` + deep-backtracking `orElse` |
+/// | `MiniParse.Suspend` | Coroutine `CoParser`, deep `orElse`, shared combinators |
 /// | `MiniParse.Bridge` | Embed `CoParser` as pure `Parser` and vice versa |
 ///
 /// Demo grammars and labs live under `Examples.*` in the repository

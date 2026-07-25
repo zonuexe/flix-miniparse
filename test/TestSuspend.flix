@@ -3,7 +3,9 @@ mod TestSuspend {
     use MiniParse.Suspend.{
         pure, char, digit, digits, string, andThen, andThenL, map, flatMap, eof,
         orElse, start, startWith, feed, close, pump, parseChunks, drive, countSuspends,
-        Outcome, Event, Suspended
+        Outcome, Event, Suspended, anyChar,
+        oneOf, noneOf, manyTill, sepBy, sepEndBy, between, symbol, ws, lexeme,
+        chainr1, takeWhile1, optional, skipMany, endOfLine, many1, filter, hexDigit
     }
     use MiniParse.Core.{initialPosition}
     use Examples.SuspendDemo.{
@@ -176,6 +178,118 @@ mod TestSuspend {
             parseChunks(orElse(kwIf, ident), "ifa" :: Nil)
         )
     }
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Expanded combinators (parity with pure Combinator)
+    ///////////////////////////////////////////////////////////////////////////
+
+    @Test
+    def testOneOfNoneOf(): Unit \ Assert = {
+        Assert.assertEq(expected = Ok('b'), parseChunks(oneOf("abc"), "b" :: Nil));
+        Assert.assertEq(expected = Ok('x'), parseChunks(noneOf("abc"), "x" :: Nil));
+        Assert.assertTrue(Result.isErr(parseChunks(oneOf("abc"), "z" :: Nil)))
+    }
+
+    @Test
+    def testManyTill(): Unit \ Assert =
+        Assert.assertEq(
+            expected = Ok('a' :: 'b' :: Nil),
+            parseChunks(manyTill(anyChar(), char('Z')), "abZ" :: Nil)
+        )
+
+    @Test
+    def testSepBy(): Unit \ Assert =
+        Assert.assertEq(
+            expected = Ok('1' :: '2' :: '3' :: Nil),
+            parseChunks(sepBy(digit(), char(',')), "1,2,3" :: Nil)
+        )
+
+    @Test
+    def testSepEndByTrailing(): Unit \ Assert =
+        Assert.assertEq(
+            expected = Ok('1' :: '2' :: Nil),
+            parseChunks(sepEndBy(digit(), char(',')), "1,2," :: Nil)
+        )
+
+    @Test
+    def testBetweenSymbol(): Unit \ Assert =
+        Assert.assertEq(
+            expected = Ok("hi"),
+            parseChunks(
+                andThen(ws(), between(symbol("("), symbol(")"), lexeme(string("hi")))),
+                " ( hi ) " :: Nil
+            )
+        )
+
+    @Test
+    def testChainr1(): Unit \ Assert = {
+        let digitVal = flatMap(c -> match Int32.fromString(Char.toString(c)) {
+            case Some(n) => pure(n)
+            case None    => MiniParse.Suspend.fail("digit")
+        }, digit());
+        let op = map(_ -> (l, r) -> l - r, char('-'));
+        // 1-2-3 as 1-(2-3) = 2
+        match parseChunks(chainr1(digitVal, op), "1-2-3" :: Nil) {
+            case Ok(2) => ()
+            case other => Assert.fail("expected 2, got ${other}")
+        }
+    }
+
+    @Test
+    def testTakeWhile1Hex(): Unit \ Assert =
+        Assert.assertEq(
+            expected = Ok("a1F"),
+            parseChunks(andThenL(takeWhile1(Char.isHexDigit), char('!')), "a1F!" :: Nil)
+        )
+
+    @Test
+    def testOptionalPresent(): Unit \ Assert =
+        Assert.assertEq(
+            expected = Ok(Some('x')),
+            parseChunks(andThenL(optional(char('x')), eof()), "x" :: Nil)
+        )
+
+    @Test
+    def testOptionalAbsent(): Unit \ Assert =
+        // optional leaves remainder; consume it so parseChunks accepts full input.
+        Assert.assertEq(
+            expected = Ok(None),
+            parseChunks(andThenL(optional(char('x')), char('y')), "y" :: Nil)
+        )
+
+    @Test
+    def testSkipMany(): Unit \ Assert =
+        Assert.assertEq(
+            expected = Ok('b'),
+            parseChunks(andThen(skipMany(char('a')), char('b')), "aaab" :: Nil)
+        )
+
+    @Test
+    def testEndOfLine(): Unit \ Assert =
+        Assert.assertEq(
+            expected = Ok("ab"),
+            parseChunks(andThenL(string("ab"), endOfLine()), "ab\n" :: Nil)
+        )
+
+    @Test
+    def testMany1(): Unit \ Assert =
+        Assert.assertEq(
+            expected = Ok('1' :: '2' :: Nil),
+            parseChunks(andThenL(many1(digit()), eof()), "12" :: Nil)
+        )
+
+    @Test
+    def testFilter(): Unit \ Assert = {
+        Assert.assertEq(
+            expected = Ok('9'),
+            parseChunks(filter(c -> c == '9', "nine", digit()), "9" :: Nil)
+        );
+        Assert.assertTrue(Result.isErr(parseChunks(filter(c -> c == '9', "nine", digit()), "8" :: Nil)))
+    }
+
+    @Test
+    def testHexDigit(): Unit \ Assert =
+        Assert.assertEq(expected = Ok('F'), parseChunks(hexDigit(), "F" :: Nil))
 
 }
 

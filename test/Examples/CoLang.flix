@@ -26,26 +26,14 @@ mod Examples.CoLang {
     use MiniParse.Core.{ParseError}
     use MiniParse.Suspend.{
         CoParser, pure, fail, map, flatMap, andThen, andThenL, char, digit,
-        letter, alphaNum, string, orElse, many, some, keyword, eof,
-        parseChunks, delay, chainl1
+        letter, alphaNum, orElse, many, some, keyword, eof, parseChunks, delay,
+        chainl1, ws, lexeme, symbol, between, charsToString
     }
     use Examples.MiniLang.{Expr, Stmt, RuntimeError, Env, runProgram}
 
     ///////////////////////////////////////////////////////////////////////////
     // Lexer-ish pieces
     ///////////////////////////////////////////////////////////////////////////
-
-    def ws(): CoParser[Unit] =
-        map(_ -> (), many(orElse(char(' '), orElse(char('\t'), orElse(char('\n'), char('\r'))))))
-
-    def lexeme(p: CoParser[a]): CoParser[a] =
-        andThenL(p, ws())
-
-    def symbol(lit: String): CoParser[String] =
-        lexeme(string(lit))
-
-    def between(open_: CoParser[a], close_: CoParser[b], p: CoParser[c]): CoParser[c] =
-        andThen(open_, andThenL(p, close_))
 
     def kw(s: String): CoParser[String] =
         lexeme(keyword(s))
@@ -54,7 +42,7 @@ mod Examples.CoLang {
         flatMap(ds -> match Int32.fromString(ds) {
             case Some(n) => pure(n)
             case None    => fail("number")
-        }, map(cs -> List.join("", List.map(Char.toString, cs)), some(digit())))
+        }, map(charsToString, some(digit())))
 
     def number(): CoParser[Expr] =
         lexeme(map(Expr.Lit, numberLit()))
@@ -64,7 +52,7 @@ mod Examples.CoLang {
         rejectKeywords(
             lexeme(
                 flatMap(c0 ->
-                    map(cs -> Char.toString(c0) + List.join("", List.map(Char.toString, cs)),
+                    map(cs -> Char.toString(c0) + charsToString(cs),
                         many(alphaNum())),
                     letter())
             )

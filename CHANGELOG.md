@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 ### Added
 
 - In-repo `bench/` nested project: wall-clock microbenchmarks vs sibling flix-parsec (`digits`, `many-a`, `skip-till`, `lines`, `csv-ones`).
+- `MiniParse.Suspend` combinator expansion toward pure `Combinator` parity: `oneOf` / `noneOf`, `manyTill`, `sepBy` / `sepEndBy` / `endBy`, `chainr1`, `ws` / `lexeme` / `symbol` / `between`, `takeWhile` / `hexDigit` / `endOfLine`, and related helpers.
 
 ## [0.2.0] - 2026-07-25
 

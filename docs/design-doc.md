@@ -153,6 +153,7 @@ Progressive steps: implement features, then validate with a concrete target.
 | **10** | Done | MiniLang comparisons/`while`; `MiniParse.Bridge` (Parser ↔ CoParser) |
 | **11** | Done | CoLang full MiniLang grammar on `CoParser`; shared AST/runtime; Bridge demo |
 | **12** | Done | `Examples.LangCompare`: MiniLang vs CoLang parse/run parity table |
+| **13** | Done | `Suspend` combinator expansion (sepBy, manyTill, lexeme/symbol, chainr1, …) |
 
 Optional follow-ups: further handler-style effects docs; error recovery labs.
 

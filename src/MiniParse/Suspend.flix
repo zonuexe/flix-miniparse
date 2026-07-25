@@ -121,6 +121,16 @@ mod MiniParse.Suspend {
             p
         )
 
+    /// Right-associative fold: `p (op p)*` associating to the right.
+    pub def chainr1(p: CoParser[a], op: CoParser[(a, a) -> a]): CoParser[a] =
+        flatMap(x ->
+            orElse(
+                flatMap(f -> map(y -> f(x, y), chainr1(p, op)), op),
+                pure(x)
+            ),
+            p
+        )
+
     ///////////////////////////////////////////////////////////////////////////
     // Character combinators
     ///////////////////////////////////////////////////////////////////////////
@@ -162,7 +172,7 @@ mod MiniParse.Suspend {
             flatMap(x -> map(xs -> x :: xs, count(n - 1, p)), p)
 
     pub def digits(n: Int32): CoParser[String] =
-        map(cs -> List.join("", List.map(Char.toString, cs)), count(n, digit()))
+        map(charsToString, count(n, digit()))
 
     pub def eof(): CoParser[Unit] =
         CoParser.Read(mc -> match mc {
@@ -179,6 +189,48 @@ mod MiniParse.Suspend {
             "alphanumeric"
         )
 
+    /// Character from the set `cs` (each code unit is one candidate).
+    pub def oneOf(cs: String): CoParser[Char] =
+        satisfy(c -> charIn(c, cs), "one of `${cs}`")
+
+    /// Character not in the set `cs`.
+    pub def noneOf(cs: String): CoParser[Char] =
+        satisfy(c -> not charIn(c, cs), "none of `${cs}`")
+
+    def charIn(c: Char, s: String): Bool = {
+        def loop(i: Int32): Bool =
+            match String.nth(i, s) {
+                case None    => false
+                case Some(d) => if (d == c) true else loop(i + 1)
+            };
+        loop(0)
+    }
+
+    /// ASCII hex digit.
+    pub def hexDigit(): CoParser[Char] =
+        satisfy(Char.isHexDigit, "hex digit")
+
+    /// End of line: `\n`, `\r\n`, or `\r`.
+    pub def endOfLine(): CoParser[Unit] =
+        orElse(
+            map(_ -> (), string("\r\n")),
+            orElse(
+                map(_ -> (), char('\n')),
+                map(_ -> (), char('\r'))
+            )
+        )
+
+    pub def charsToString(cs: List[Char]): String =
+        List.join("", List.map(Char.toString, cs))
+
+    /// Zero or more characters matching `pred`, as a string.
+    pub def takeWhile(pred: Char -> Bool): CoParser[String] =
+        map(charsToString, many(satisfy(pred, "takeWhile")))
+
+    /// One or more characters matching `pred`, as a string.
+    pub def takeWhile1(pred: Char -> Bool): CoParser[String] =
+        map(charsToString, some(satisfy(pred, "takeWhile1")))
+
     /// Zero or more. Relies on deep `orElse`: a failing `p` rewinds so the
     /// alternative `pure(Nil)` can succeed (p must fail on its first mismatch
     /// in a rewind-safe way — our `satisfy` does).
@@ -190,6 +242,96 @@ mod MiniParse.Suspend {
 
     pub def some(p: CoParser[a]): CoParser[List[a]] =
         flatMap(x -> map(xs -> x :: xs, many(p)), p)
+
+    /// Alias of `some` (Parsec naming).
+    pub def many1(p: CoParser[a]): CoParser[List[a]] =
+        some(p)
+
+    /// `Some` on success; `None` if `p` fails without consuming (deep rewind).
+    pub def optional(p: CoParser[a]): CoParser[Option[a]] =
+        orElse(map(Some, p), pure(None))
+
+    /// `optional(p)` with a default when absent.
+    pub def option(default: a, p: CoParser[a]): CoParser[a] =
+        map(o -> match o {
+            case Some(x) => x
+            case None    => default
+        }, optional(p))
+
+    /// Zero or more, discarding results.
+    pub def skipMany(p: CoParser[a]): CoParser[Unit] =
+        void(many(p))
+
+    /// One or more, discarding results.
+    pub def skipSome(p: CoParser[a]): CoParser[Unit] =
+        void(some(p))
+
+    /// Keep applying `p` until `end` succeeds; `end` is consumed. Collect `p`s.
+    ///
+    /// Relies on deep `orElse` so a failing `end` rewinds before trying `p`.
+    pub def manyTill(p: CoParser[a], end: CoParser[b]): CoParser[List[a]] =
+        orElse(
+            map(_ -> Nil, end),
+            flatMap(x -> map(xs -> x :: xs, manyTill(p, end)), p)
+        )
+
+    /// Zero or more `p` separated by `sep`.
+    pub def sepBy(p: CoParser[a], sep: CoParser[b]): CoParser[List[a]] =
+        orElse(sepBy1(p, sep), pure(Nil))
+
+    /// One or more `p` separated by `sep`.
+    pub def sepBy1(p: CoParser[a], sep: CoParser[b]): CoParser[List[a]] =
+        flatMap(x ->
+            map(xs -> x :: xs, many(andThen(sep, p))),
+            p
+        )
+
+    /// Zero or more `p` each terminated by `sep` (`p sep`)* .
+    pub def endBy(p: CoParser[a], sep: CoParser[b]): CoParser[List[a]] =
+        many(andThenL(p, sep))
+
+    /// One or more `p` each terminated by `sep`.
+    pub def endBy1(p: CoParser[a], sep: CoParser[b]): CoParser[List[a]] =
+        some(andThenL(p, sep))
+
+    /// Zero or more `p` separated and optionally ended by `sep`.
+    pub def sepEndBy(p: CoParser[a], sep: CoParser[b]): CoParser[List[a]] =
+        orElse(sepEndBy1(p, sep), pure(Nil))
+
+    /// One or more `p` separated and optionally ended by `sep`.
+    pub def sepEndBy1(p: CoParser[a], sep: CoParser[b]): CoParser[List[a]] =
+        flatMap(x ->
+            flatMap(xs ->
+                map(_ -> x :: xs, optional(sep)),
+                many(andThen(sep, p))),
+            p
+        )
+
+    /// Succeed only if `pred` holds on `p`'s result.
+    pub def filter(pred: a -> Bool, label: String, p: CoParser[a]): CoParser[a] =
+        flatMap(x ->
+            if (pred(x)) pure(x) else fail(label),
+            p
+        )
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Lexical helpers
+    ///////////////////////////////////////////////////////////////////////////
+
+    pub def spaceChar(): CoParser[Char] =
+        satisfy(c -> c == ' ' or c == '\t' or c == '\n' or c == '\r', "space")
+
+    pub def ws(): CoParser[Unit] =
+        void(many(spaceChar()))
+
+    pub def lexeme(p: CoParser[a]): CoParser[a] =
+        andThenL(p, ws())
+
+    pub def symbol(lit: String): CoParser[String] =
+        lexeme(string(lit))
+
+    pub def between(open_: CoParser[a], close_: CoParser[b], p: CoParser[c]): CoParser[c] =
+        andThen(open_, andThenL(p, close_))
 
     /// Peek at the next character (or EOF) without consuming.
     pub def peek(): CoParser[Option[Char]] =
@@ -218,7 +360,7 @@ mod MiniParse.Suspend {
     /// prefer trying `keyword` first in an `orElse`).
     pub def ident(): CoParser[String] =
         flatMap(c0 ->
-            map(cs -> Char.toString(c0) + List.join("", List.map(Char.toString, cs)),
+            map(cs -> Char.toString(c0) + charsToString(cs),
                 many(alphaNum())),
             letter())
 

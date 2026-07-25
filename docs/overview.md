@@ -27,9 +27,14 @@ MiniParse
 ├── Packrat       Table / Cell / newTable (Region + MutMap)
 ├── ErrorFormat   formatError (line + caret)
 ├── Stream        feed / close / step → Done | Fail | Await  (restart)
-├── Suspend       CoParser free monad, deep orElse, Peek/keyword
+├── Suspend       CoParser free monad, deep orElse, Peek/keyword, shared combinators
 └── Bridge        CoParser ↔ pure Parser embeddings
 ```
+
+`Suspend` now mirrors most of `Combinator` (lists, folding, lexical `ws`/`lexeme`/`symbol`,
+`manyTill` / `sepBy` / `sepEndBy`, character classes). Remaining gaps vs pure are mostly
+parser-level `lookAhead` / `notFollowedBy` of arbitrary subparsers (char-level `Peek` /
+`notFollowedByPred` cover the common cases).
 
 ### Bridge
 
