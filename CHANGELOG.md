@@ -9,6 +9,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 ### Added
 
 - `MiniParse.RecoverCo`: panic-mode recovery for `CoParser` (`runProgramSkipping`, Co `resync`); `Examples.CoRecoverLab` compares pure Recover vs Co on the same MiniLang-shaped sample (chunks joined before recover).
+- `CONTRIBUTING.md` for repository development (Nix shell, test/package commands); root `README` focused on library consumers.
+
+### Changed
+
+- Root `README.md`: development/Nix details moved to `CONTRIBUTING.md`.
 
 ## [0.3.0] - 2026-07-25
 

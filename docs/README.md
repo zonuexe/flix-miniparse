@@ -11,17 +11,19 @@ Also useful at the repo root:
 
 | File | Contents |
 | --- | --- |
-| [../README.md](../README.md) | Quick start, dependency pin, library table |
+| [../README.md](../README.md) | Depend on the package, library map (consumers) |
+| [../CONTRIBUTING.md](../CONTRIBUTING.md) | Nix shell, `flix test` / `build-pkg`, layout (contributors) |
 | [../CHANGELOG.md](../CHANGELOG.md) | Release history (Keep a Changelog) |
 | [../bench/README.md](../bench/README.md) | Optional microbench vs flix-parsec |
 
 ## Suggested reading order
 
-1. Root README → install and `flix run`
+1. Root README → depend on `miniparse` and skim the module table
 2. **overview** → where each module sits
 3. **recovery** → after you have a working `stmt` list (MiniLang)
 4. **suspend** → when comparing Stream vs CoParser or reading CoLang
 5. **design-doc** → history and why layers were split
+6. **CONTRIBUTING** → only if you clone this repo to hack on it
 
 ## Labs tied to docs
 

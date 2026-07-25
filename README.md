@@ -16,21 +16,9 @@ Implement combinators from scratch and **compare**:
 - **Parsec-style** predictive parsing (explicit `attempt` / try)
 - **PEG-style** automatic backtracking (ordered choice, `&` / `!`)
 - **Packrat** memoization, **streaming**, and **coroutine** suspension
+- **Panic-mode recovery** and unified diagnostics
 
-## Quick start
-
-### Development shell
-
-```bash
-nix develop          # or: direnv allow
-flix check
-flix test
-flix run             # guided tour of Examples.*
-```
-
-Without Nix: JDK 21+ and [Flix 0.75.1](https://github.com/flix/flix/releases).
-
-### Depend from another Flix project
+## Use as a Flix dependency
 
 ```toml
 # flix.toml
@@ -38,7 +26,7 @@ Without Nix: JDK 21+ and [Flix 0.75.1](https://github.com/flix/flix/releases).
 "github:zonuexe/flix-miniparse" = "0.3.0"
 ```
 
-Prefer **`MiniParse.*`** only — treat `Examples.*` as sample code.
+Prefer **`MiniParse.*` only**. Modules under `Examples.*` (in this repository’s `test/`) are teaching demos, not a stable API.
 
 ### Minimal pure parse
 
@@ -68,8 +56,6 @@ def digits(): MiniParse.Core.Parser[String] =
 | [`MiniParse.Suspend`](src/MiniParse/Suspend.flix) | `CoParser` + deep `orElse` |
 | [`MiniParse.Bridge`](src/MiniParse/Bridge.flix) | `CoParser` ↔ pure `Parser` |
 
-More detail: **[docs/](docs/README.md)** (overview, recovery, suspend, design) · history: **[CHANGELOG.md](CHANGELOG.md)**.
-
 ```text
   MiniParse.Parsec  |  MiniParse.PEG  |  MiniParse.Suspend
            \        |        /                  |
@@ -78,61 +64,34 @@ More detail: **[docs/](docs/README.md)** (overview, recovery, suspend, design) �
          Stream · Recover · Packrat · ErrorFormat
 ```
 
-## Examples (labs)
+## Documentation
 
-Modules under `Examples.*` are **teaching demos**, not a stable API:
+| Doc | For |
+| --- | --- |
+| **[docs/](docs/README.md)** | Guides (overview, recovery, suspend, design) |
+| **[CHANGELOG.md](CHANGELOG.md)** | Release history |
+| **[CONTRIBUTING.md](CONTRIBUTING.md)** | Clone, develop, test, package this repo |
+
+## Exploring the labs (this repository)
+
+The package tour and example grammars live in the **source tree**, not in the published fpkg:
+
+```bash
+flix run    # guided tour of Examples.*
+flix test
+```
 
 | Lab | Idea |
 | --- | --- |
 | Postal / JSON / Expr | Core → recursion → precedence |
 | Keyword / MiniLang / CoLang | `if` vs `ifa`; pure vs suspendable mini language |
-| LangCompare | MiniLang vs CoLang AST/run parity table |
+| LangCompare | MiniLang vs CoLang AST/run parity |
 | RecoverLab / CoRecoverLab | Panic-mode recovery (pure vs Co) |
 | Packrat / LeftRec | Memoization; Warth-style growth |
 | Stream / Suspend / CostCompare | Restart vs continuation cost |
 
-```bash
-flix run    # prints a tour of the labs
-```
-
-## Project layout
-
-```text
-flix-miniparse/
-├── flix.toml              # package manifest (name: miniparse)
-├── flake.nix              # reproducible Flix + JDK 21 shell
-├── Main.flix              # flix run tour
-├── src/
-│   └── MiniParse/         # library (published in fpkg)
-├── test/
-│   ├── Examples/          # labs / demos (not shipped in fpkg)
-│   └── Test*.flix         # flix test
-├── bench/                 # nested project: vs flix-parsec microbench
-├── docs/
-│   ├── README.md          # docs index
-│   ├── overview.md        # API map for consumers
-│   ├── recovery.md        # panic-mode recovery guide
-│   ├── suspend.md         # CoParser / Stream notes
-│   └── design-doc.md      # architecture & roadmap
-├── CHANGELOG.md
-├── LICENSE
-└── LICENSE.md             # copy for flix build-pkg
-```
-
-## Development
-
-| Command | Purpose |
-| --- | --- |
-| `nix develop` | Enter shell with `flix` and JDK 21 |
-| `flix check` | Type-check |
-| `flix test` | Run unit tests |
-| `flix run` | Demo tour |
-| `flix build-pkg` | Build `artifact/flix-miniparse.fpkg` (library only) |
-| `bash scripts/check-fpkg.sh` | Guard fpkg has no `Main` / `Examples` |
-| `bash bench/scripts/install-local-deps.sh` then `cd bench && JAVA_OPTS=-Xss8m flix run` | Microbench vs sibling `flix-parsec` (see [bench/README.md](bench/README.md)) |
-
-CI: [`.github/workflows/build-and-test.yaml`](.github/workflows/build-and-test.yaml) (JDK 21, Flix from `flix.toml`).
+Tooling setup (Nix, JDK, CI, packaging): see **[CONTRIBUTING.md](CONTRIBUTING.md)**.
 
 ## License
 
-Copyright contributors; licensed under the Apache License, Version 2.0. See [`LICENSE.md`](LICENSE.md) file.
+Copyright contributors; licensed under the Apache License, Version 2.0. See [`LICENSE.md`](LICENSE.md).
