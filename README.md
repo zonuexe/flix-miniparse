@@ -104,6 +104,7 @@ flix-miniparse/
 ├── test/
 │   ├── Examples/          # labs / demos (not shipped in fpkg)
 │   └── Test*.flix         # flix test
+├── bench/                 # nested project: vs flix-parsec microbench
 ├── docs/
 │   ├── overview.md        # API map for consumers
 │   └── design-doc.md      # architecture & roadmap
@@ -122,6 +123,7 @@ flix-miniparse/
 | `flix run` | Demo tour |
 | `flix build-pkg` | Build `artifact/flix-miniparse.fpkg` (library only) |
 | `bash scripts/check-fpkg.sh` | Guard fpkg has no `Main` / `Examples` |
+| `bash bench/scripts/install-local-deps.sh` then `cd bench && JAVA_OPTS=-Xss8m flix run` | Microbench vs sibling `flix-parsec` (see [bench/README.md](bench/README.md)) |
 
 CI: [`.github/workflows/build-and-test.yaml`](.github/workflows/build-and-test.yaml) (JDK 21, Flix from `flix.toml`).
 

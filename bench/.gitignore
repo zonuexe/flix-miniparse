@@ -1,0 +1,8 @@
+build/
+lib/
+result
+result-*
+.direnv/
+*.fpkg
+crash_report_*.txt
+.DS_Store

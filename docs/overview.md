@@ -94,6 +94,12 @@ Run everything with `flix run` (see root `Main.flix`; labs live under `test/Exam
 
 Architecture, roadmap history, and rationale: [design-doc.md](design-doc.md).
 
+## Comparison bench (optional)
+
+Nested project [`bench/`](../bench/) measures wall-clock microtasks against sibling
+[flix-parsec](https://github.com/stephentetley/flix-parsec). Not part of the published
+fpkg. See [bench/README.md](../bench/README.md).
+
 ## Versioning
 
 This package is educational. The `0.y.z` series may change module layouts and APIs without a long deprecation cycle. Pin a git commit or tag when depending on it.

@@ -1,0 +1,13 @@
+[package]
+name        = "parser-bench"
+description = "In-repo microbenchmarks: miniparse vs sibling flix-parsec"
+version     = "0.1.0"
+flix        = "0.75.1"
+license     = "Apache-2.0"
+authors     = ["USAMI Kenta <tadsan@zonu.me>"]
+
+# Local fpkgs under lib/github/... are used when present (see scripts/install-local-deps.sh).
+# flix-parsec needs unrestricted: 2-CPS monad uses unchecked_cast + Java Collator.
+[dependencies]
+"github:zonuexe/flix-miniparse" = { version = "0.2.0", security = "unrestricted" }
+"github:stephentetley/flix-parsec" = { version = "0.3.0", security = "unrestricted" }

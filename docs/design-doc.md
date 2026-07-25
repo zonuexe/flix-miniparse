@@ -156,6 +156,12 @@ Progressive steps: implement features, then validate with a concrete target.
 
 Optional follow-ups: further handler-style effects docs; error recovery labs.
 
+### Cross-library microbench
+
+Nested package `bench/` (not shipped in the fpkg) compares pure/`CoParser`
+miniparse combinators to sibling `flix-parsec` on shared micro-tasks. Install
+local fpkgs with `bench/scripts/install-local-deps.sh`, then `cd bench && flix run`.
+
 ## 6. Package layout (consumer view)
 
 | Path | Role |

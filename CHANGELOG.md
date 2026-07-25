@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+### Added
+
+- In-repo `bench/` nested project: wall-clock microbenchmarks vs sibling flix-parsec (`digits`, `many-a`, `skip-till`, `lines`, `csv-ones`).
+
 ## [0.2.0] - 2026-07-25
 
 Educational release focused on **Bridge**, full **CoLang** on the suspendable stack, and packing only library sources for dependents.
