@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-07-25
+
+Educational release focused on **panic-mode recovery**, fuller **CoParser** combinators, learner docs, and an optional **bench** against flix-parsec.
+
 ### Added
 
 - In-repo `bench/` nested project: wall-clock microbenchmarks vs sibling flix-parsec (`digits`, `many-a`, `skip-till`, `lines`, `csv-ones`).
@@ -51,6 +55,7 @@ First educational release of **miniparse** (`flix-miniparse`): a Flix lab for le
 - Educational example grammars: postal codes, JSON, arithmetic, keyword boundary, MiniLang, CoLang, streaming demos, and Stream versus Suspend scan-cost comparison.
 - Nix flake development shell (Flix 0.75.1 and JDK 21), GitHub Actions CI, EditorConfig, package docs (`README`, `docs/overview.md`, `docs/design-doc.md`).
 
-[Unreleased]: https://github.com/zonuexe/flix-miniparse/compare/v0.2.0...HEAD
+[Unreleased]: https://github.com/zonuexe/flix-miniparse/compare/v0.3.0...HEAD
+[0.3.0]: https://github.com/zonuexe/flix-miniparse/compare/v0.2.0...v0.3.0
 [0.2.0]: https://github.com/zonuexe/flix-miniparse/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/zonuexe/flix-miniparse/releases/tag/v0.1.0

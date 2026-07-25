@@ -36,7 +36,7 @@ install_pkg() {
 }
 
 # Package file basenames match flix build-pkg output (directory-based).
-install_pkg "$MINI" "zonuexe" "flix-miniparse" "0.2.0"
+install_pkg "$MINI" "zonuexe" "flix-miniparse" "0.3.0"
 install_pkg "$PARSEC" "stephentetley" "flix-parsec" "0.3.0"
 
 echo "ok: local dependencies ready under ${ROOT}/lib"

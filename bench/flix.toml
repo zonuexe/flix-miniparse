@@ -9,5 +9,5 @@ authors     = ["USAMI Kenta <tadsan@zonu.me>"]
 # Local fpkgs under lib/github/... are used when present (see scripts/install-local-deps.sh).
 # flix-parsec needs unrestricted: 2-CPS monad uses unchecked_cast + Java Collator.
 [dependencies]
-"github:zonuexe/flix-miniparse" = { version = "0.2.0", security = "unrestricted" }
+"github:zonuexe/flix-miniparse" = { version = "0.3.0", security = "unrestricted" }
 "github:stephentetley/flix-parsec" = { version = "0.3.0", security = "unrestricted" }

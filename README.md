@@ -35,7 +35,7 @@ Without Nix: JDK 21+ and [Flix 0.75.1](https://github.com/flix/flix/releases).
 ```toml
 # flix.toml
 [dependencies]
-"github:zonuexe/flix-miniparse" = "0.2.0"
+"github:zonuexe/flix-miniparse" = "0.3.0"
 ```
 
 Prefer **`MiniParse.*`** only — treat `Examples.*` as sample code.
