@@ -14,6 +14,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 ### Changed
 
 - Root `README.md`: development/Nix details moved to `CONTRIBUTING.md`.
+- Root `README.md`: short beginner intro to Parsec- and PEG-style fronts (Wikipedia links) before the dependency section.
+
+### Added
+
+- `docs/tutorial.md`: walkthrough from combinators to Parsec vs PEG and where the labs fit.
+- Japanese tutorial at `docs/ja/tutorial.md` (no hard wrap; no spaces between CJK and Latin).
 
 ## [0.3.0] - 2026-07-25
 

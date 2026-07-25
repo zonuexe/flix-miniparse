@@ -11,12 +11,25 @@
 | **License** | [Apache-2.0](LICENSE.md) |
 | **Status** | Lab / learning project — not production middleware |
 
-Implement combinators from scratch and **compare**:
+Parser combinators are small functions you compose into a grammar. This library
+implements that idea from scratch in Flix so you can **see the machinery** and
+**compare designs**, not only call a black-box API.
 
-- **Parsec-style** predictive parsing (explicit `attempt` / try)
-- **PEG-style** automatic backtracking (ordered choice, `&` / `!`)
-- **Packrat** memoization, **streaming**, and **coroutine** suspension
-- **Panic-mode recovery** and unified diagnostics
+## Two styles: Parsec and PEG
+
+miniparse ships **both** of the common combinator philosophies side by side on
+one shared engine (`Core` + `Combinator`):
+
+| Style | Module | Backtracking in a nutshell |
+| --- | --- | --- |
+| **[Parsec](https://en.wikipedia.org/wiki/Parsec_(parser))** | `MiniParse.Parsec` | Predictive / LL(1)-like. After a branch **consumes** input, failure does **not** automatically try the next alternative. You opt in with `attempt` (Parsec’s `try`). |
+| **[PEG](https://en.wikipedia.org/wiki/Parsing_expression_grammar)** | `MiniParse.PEG` | Ordered choice (`/`) **rewinds** a failed alternative for you. Also has lookahead predicates (`&` / `!`). |
+
+Same grammar, different failure rules — that contrast is the point of the lab.
+Beyond the two fronts, the package also explores packrat memoization, streaming
+input, coroutine-style suspension, and panic-mode error recovery.
+
+Step-by-step walkthrough: **[docs/tutorial.md](docs/tutorial.md)** · 日本語: **[docs/ja/tutorial.md](docs/ja/tutorial.md)**.
 
 ## Use as a Flix dependency
 

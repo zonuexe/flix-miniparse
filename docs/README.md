@@ -2,6 +2,8 @@
 
 | Doc | Audience | Contents |
 | --- | --- | --- |
+| [tutorial.md](tutorial.md) | Beginners | Combinators intro; Parsec vs PEG walkthrough |
+| [ja/tutorial.md](ja/tutorial.md) | Beginners (日本語) | Same tutorial; no CJK–Latin spacing; no hard wrap |
 | [overview.md](overview.md) | Consumers / newcomers | Module map, minimal snippets, labs table |
 | [design-doc.md](design-doc.md) | Contributors | Architecture, roadmap status, package layout |
 | [recovery.md](recovery.md) | Learners + practical users | Panic-mode recovery, soft errors, sync tokens |
@@ -18,12 +20,13 @@ Also useful at the repo root:
 
 ## Suggested reading order
 
-1. Root README → depend on `miniparse` and skim the module table
-2. **overview** → where each module sits
-3. **recovery** → after you have a working `stmt` list (MiniLang)
-4. **suspend** → when comparing Stream vs CoParser or reading CoLang
-5. **design-doc** → history and why layers were split
-6. **CONTRIBUTING** → only if you clone this repo to hack on it
+1. Root README → depend on `miniparse` and skim Parsec vs PEG
+2. **tutorial** → first hands-on path (combinators, choice policies)
+3. **overview** → full module map
+4. **recovery** → after you have a working `stmt` list (MiniLang)
+5. **suspend** → when comparing Stream vs CoParser or reading CoLang
+6. **design-doc** → history and why layers were split
+7. **CONTRIBUTING** → only if you clone this repo to hack on it
 
 ## Labs tied to docs
 
