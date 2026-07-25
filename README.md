@@ -64,6 +64,7 @@ def digits(): MiniParse.Core.Parser[String] =
 | [`MiniParse.ErrorFormat`](src/MiniParse/ErrorFormat.flix) | Pretty diagnostics |
 | [`MiniParse.Stream`](src/MiniParse/Stream.flix) | Chunked input (restart `Await`) |
 | [`MiniParse.Suspend`](src/MiniParse/Suspend.flix) | `CoParser` + deep `orElse` |
+| [`MiniParse.Bridge`](src/MiniParse/Bridge.flix) | `CoParser` ↔ pure `Parser` |
 
 More detail: **[docs/overview.md](docs/overview.md)** · design notes: **[docs/design-doc.md](docs/design-doc.md)** · history: **[CHANGELOG.md](CHANGELOG.md)**.
 

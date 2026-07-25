@@ -17,7 +17,11 @@
 ///
 mod MiniParse.Suspend {
 
-    use MiniParse.Core.{ParseError, Position, initialPosition, advancePosition}
+    use MiniParse.Core.{
+        ParseError, Position, State, Parser,
+        initialPosition, advancePosition, positionOffset,
+        initState, stateOffset, statePos, stateInput, mkParser
+    }
 
     ///////////////////////////////////////////////////////////////////////////
     // Free / coroutine parser
@@ -341,6 +345,45 @@ mod MiniParse.Suspend {
 
     pub def pump(p: CoParser[a], buf: String, pos: Position, eof: Bool): Outcome[a] =
         outcomeOf(attempt(p, buf, pos, eof, ""))
+
+    ///////////////////////////////////////////////////////////////////////////
+    // Bridge hooks: CoParser as a pure Parser (full buffer, eof = true)
+    ///////////////////////////////////////////////////////////////////////////
+
+    /// Run `p` on the remainder of `s` with EOF asserted (no `Await`).
+    ///
+    /// Used by `MiniParse.Bridge.toParser` to embed coroutine parsers in the
+    /// pure `Parser` stack (Parsec/PEG combinators, `Core.parse`, etc.).
+    pub def runCoPartial(p: CoParser[a], s: State): Result[ParseError, (a, State)] =
+        match s {
+            case State.State(input, pos) => {
+                let buf = String.dropLeft(positionOffset(pos), input);
+                match attempt(p, buf, pos, true, "") {
+                    case Attempt.Ok(x, _rest, pos1) =>
+                        Ok((x, State.State(input, pos1)))
+                    case Attempt.Err(e, _, _) =>
+                        Err(e)
+                    case Attempt.Need(_, pos1, _) =>
+                        // Should not occur when eof=true; treat as hard EOF.
+                        Err(ParseError.Error(pos1, "end of input" :: Nil))
+                }
+            }
+        }
+
+    /// Full parse of `input` via the pure `Parser` embedding.
+    pub def runCo(p: CoParser[a], input: String): Result[ParseError, a] =
+        match runCoPartial(p, initState(input)) {
+            case Ok((x, s1)) =>
+                if (stateOffset(s1) >= String.length(stateInput(s1)))
+                    Ok(x)
+                else
+                    Err(ParseError.Error(statePos(s1), "end of input" :: Nil))
+            case Err(e) => Err(e)
+        }
+
+    /// Compile a `CoParser` into a pure `Parser` (whole remainder available).
+    pub def toParser(p: CoParser[a]): Parser[a] =
+        mkParser(s -> runCoPartial(p, s))
 
     pub def start(p: CoParser[a]): Outcome[a] =
         pump(p, "", initialPosition(), false)

@@ -27,8 +27,25 @@ MiniParse
 ├── Packrat       Table / Cell / newTable (Region + MutMap)
 ├── ErrorFormat   formatError (line + caret)
 ├── Stream        feed / close / step → Done | Fail | Await  (restart)
-└── Suspend       CoParser free monad, deep orElse, Peek/keyword
+├── Suspend       CoParser free monad, deep orElse, Peek/keyword
+└── Bridge        CoParser ↔ pure Parser embeddings
 ```
+
+### Bridge
+
+```flix
+use MiniParse.Bridge.{toParser, fromParser, parseCo, pureViaCo}
+use MiniParse.Suspend.{string, orElse}
+use MiniParse.Core.{parse}
+use MiniParse.Combinator.{digit}
+
+// Co → pure (compose with Parsec/PEG combinators)
+parse(toParser(orElse(string("ab"), string("ac"))), "ac")
+
+// pure → Co (buffers until EOF, then runs the pure parser)
+pureViaCo(digit(), "7")
+```
+
 
 ### Typical pure pipeline
 

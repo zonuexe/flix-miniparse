@@ -147,6 +147,23 @@ def main(): Unit \ IO = {
     };
 
     println("");
+    println("== Bridge (CoParser ↔ Parser) ==");
+    println("  co→pure orElse ab|ac on ac: ${MiniParse.Bridge.parseCo(
+        MiniParse.Suspend.orElse(
+            MiniParse.Suspend.string("ab"),
+            MiniParse.Suspend.string("ac")
+        ),
+        "ac"
+    )}");
+    println("  pure→co many digits on 42: ${MiniParse.Bridge.pureViaCo(
+        MiniParse.Combinator.map(
+            MiniParse.Combinator.charsToString,
+            MiniParse.Combinator.many(MiniParse.Combinator.digit())
+        ),
+        "42"
+    )}");
+
+    println("");
     println("== Error formatting (unified) ==");
     println("-- pure parse mismatch --");
     match parse(digit(), "xy") {

@@ -13,6 +13,7 @@
 /// | `MiniParse.ErrorFormat` | Caret-style error messages |
 /// | `MiniParse.Stream` | Chunked input, restart-style `Await` |
 /// | `MiniParse.Suspend` | Coroutine `CoParser` + deep-backtracking `orElse` |
+/// | `MiniParse.Bridge` | Embed `CoParser` as pure `Parser` and vice versa |
 ///
 /// Demo grammars and labs live under `Examples.*` in the repository
 /// (`test/Examples/`), not part of the published library package.
