@@ -11,7 +11,7 @@
 /// | `Examples.Json` | Recursive JSON |
 /// | `Examples.Expr` / `Keyword` | Precedence; `if` vs `ifa` |
 /// | `Examples.Packrat` / `LeftRec` | Memoization; left recursion |
-/// | `Examples.MiniLang` | Pure-parser mini language |
+/// | `Examples.MiniLang` | Pure-parser mini language (`while`, comparisons) |
 /// | `Examples.StreamDemo` / `SuspendDemo` | Streaming styles |
 /// | `Examples.CoLang` | CoParser MiniLang fragment |
 /// | `Examples.CostCompare` | Stream vs Suspend scan cost |

@@ -88,4 +88,51 @@ mod TestMiniLang {
                 Assert.fail("expected 7")
         }
 
+    @Test
+    def testComparison(): Unit \ Assert =
+        match runSource("print 1 + 2 == 3; print 2 < 1; print 5 >= 5;") {
+            case Ok(Ok((_, out))) =>
+                Assert.assertEq(expected = 1 :: 0 :: 1 :: Nil, out)
+            case _ =>
+                Assert.fail("expected comparison results")
+        }
+
+    @Test
+    def testComparisonBindsLooserThanArith(): Unit \ Assert =
+        // 1 + 2 == 3  is  (1+2) == 3, not 1 + (2 == 3)
+        match runSource("print 1 + 2 == 3;") {
+            case Ok(Ok((_, out))) =>
+                Assert.assertEq(expected = 1 :: Nil, out)
+            case _ =>
+                Assert.fail("expected 1")
+        }
+
+    @Test
+    def testWhileSum(): Unit \ Assert =
+        // sum 1..5
+        match runSource(
+            "let i = 1; let s = 0; while i <= 5 do { let s = s + i; let i = i + 1; } print s;"
+        ) {
+            case Ok(Ok((_, out))) =>
+                Assert.assertEq(expected = 15 :: Nil, out)
+            case other =>
+                Assert.fail("expected 15, got ${other}")
+        }
+
+    @Test
+    def testWhileFalseNeverRuns(): Unit \ Assert =
+        match runSource("let x = 0; while 0 do let x = 1; print x;") {
+            case Ok(Ok((_, out))) =>
+                Assert.assertEq(expected = 0 :: Nil, out)
+            case _ =>
+                Assert.fail("expected 0")
+        }
+
+    @Test
+    def testWhileLoopLimit(): Unit \ Assert =
+        match runSource("while 1 do { }") {
+            case Ok(Err(Examples.MiniLang.RuntimeError.LoopLimit)) => ()
+            case other => Assert.fail("expected LoopLimit, got ${other}")
+        }
+
 }

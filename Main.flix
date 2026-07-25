@@ -133,7 +133,12 @@ def main(): Unit \ IO = {
     let prog =
         "let ifa = 2;\n" +
         "let y = 3;\n" +
-        "if ifa then print ifa * y; else print 0;\n";
+        "if ifa then print ifa * y; else print 0;\n" +
+        "let i = 1;\n" +
+        "let s = 0;\n" +
+        "while i <= 3 do { let s = s + i; let i = i + 1; }\n" +
+        "print s;\n" +
+        "print 1 + 1 == 2;\n";
     println(prog);
     match runSource(prog) {
         case Ok(Ok((_env, out))) => println("output = ${out}")

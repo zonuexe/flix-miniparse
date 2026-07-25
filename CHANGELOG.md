@@ -10,6 +10,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 - CI and `scripts/check-fpkg.sh` guard that the published fpkg contains only `MiniParse.*` library sources.
 - Shared diagnostics helpers for incomplete input versus hard parse errors across pure parse, Stream, and Suspend.
+- MiniLang comparison operators (`==`, `!=`, `<`, `<=`, `>`, `>=`) and `while` / `do` loops (with a iteration safety cap).
 
 ### Changed
 
