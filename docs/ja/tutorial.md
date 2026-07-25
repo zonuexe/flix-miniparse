@@ -1,6 +1,6 @@
 # チュートリアル: miniparseのパーサーコンビネータ
 
-「パーサーコンビネータとは何か」から、このパッケージにおけるParsecとPEGの違いまでを短く辿る。モジュール一覧や発展的な話題は[overview.md](../overview.md)ほかのガイドを参照。
+「[パーサコンビネータ](https://ja.wikipedia.org/wiki/パーサコンビネータ)とは何か」から、このパッケージにおけるParsecとPEGの違いまでを短く辿る。モジュール一覧や発展的な話題は[overview.md](overview.md)ほかの日本語ガイド、または英語の[overview.md](../overview.md)を参照。
 
 **前提:** Flix 0.75.1+と`miniparse`への依存（ルートの[README](../../README.md)）、またはこのリポジトリをcloneして`flix test` / `flix run`（[CONTRIBUTING.md](../../CONTRIBUTING.md)）。
 
@@ -10,7 +10,7 @@
 
 ## 1. 何を書いているか
 
-**パーサー**はテキストを構造化された値（またはエラー）に変える。**パーサーコンビネータ**は小さなパーサーと、それらを組み合わせる演算子（`map`、`andThen`、`many`、choiceなど）である。文法を別ファイルの`.y` / `.peg`ではなく、普通のFlix関数として書く。
+**パーサー**はテキストを構造化された値（またはエラー）に変える。**[パーサコンビネータ](https://ja.wikipedia.org/wiki/パーサコンビネータ)**は小さなパーサーと、それらを組み合わせる演算子（`map`、`andThen`、`many`、choiceなど）である。文法を別ファイルの`.y` / `.peg`ではなく、普通のFlix関数として書く。
 
 miniparseの核は次の形である。
 
@@ -54,7 +54,7 @@ def digits(): MiniParse.Core.Parser[String] =
 
 ## 3. Parsecスタイル: 消費したらコミット
 
-背景: [Parsec (parser)](https://en.wikipedia.org/wiki/Parsec_(parser)) — Haskellの古典的なコンビネータライブラリ。同じ設計は多くの言語に現れる。
+背景: [Parsec (パーサー)](https://ja.wikipedia.org/wiki/Parsec_(パーサー)) — Haskellの古典的なコンビネータライブラリ。同じ設計は多くの言語に現れる。
 
 miniparseでは:
 
@@ -84,7 +84,7 @@ Parsec側の直し方: キーワード（または消費する接頭辞）を`at
 
 ## 4. PEGスタイル: 順序付き選択が巻き戻す
 
-背景: [Parsing expression grammar](https://en.wikipedia.org/wiki/Parsing_expression_grammar)（PEG）— 順序付き選択`e1 / e2`は`e1`を試し、失敗したら入力を**復元**して`e2`を試す。PEGには構文的述語`&e`（and）と`!e`（not）もある。
+背景: [Parsing expression grammar](https://ja.wikipedia.org/wiki/Parsing_expression_grammar)（PEG）— 順序付き選択`e1 / e2`は`e1`を試し、失敗したら入力を**復元**して`e2`を試す。PEGには構文的述語`&e`（and）と`!e`（not）もある。
 
 miniparseでは:
 
@@ -106,7 +106,7 @@ use MiniParse.PEG.{choice, andPredicate, notPredicate}
 | **commitとtry**、LL(1)寄りの規律を理解する | **Parsec** + 自分で`attempt`を置く |
 | 文法らしい順序付き選択と`&` / `!`を好む | **PEG** |
 | **メモ化 / 左再帰**を学ぶ | 基礎のあとPackratラボ（`Examples.Packrat`、`LeftRec`） |
-| チャンク入力 / サスペンドのコスト | [suspend.md](../suspend.md)、`Stream` / `Suspend` / `CostCompare` |
+| チャンク入力 / サスペンドのコスト | [suspend.md](suspend.md)、`Stream` / `Suspend` / `CostCompare` |
 
 言語ごとに唯一の「正しい」スタイルはない。miniparseの価値は、**両方**がひとつの`Parser`型の上に載り、choice層だけ差し替えられることである。
 
@@ -116,12 +116,12 @@ use MiniParse.PEG.{choice, andPredicate, notPredicate}
 
 | 次 | Doc / lab |
 | --- | --- |
-| モジュール一覧とスニペット | [overview.md](../overview.md) |
-| アーキテクチャとロードマップ | [design-doc.md](../design-doc.md) |
+| モジュール一覧とスニペット | [overview.md](overview.md) |
+| アーキテクチャとロードマップ | [design-doc.md](design-doc.md) |
 | キーワード / `if` vs `ifa` | `Examples.Keyword`、`flix run` |
 | 小さな言語 | `Examples.MiniLang`（pure）、`Examples.CoLang`（CoParser） |
-| 壊れた文のあとのsoft error | [recovery.md](../recovery.md) |
-| ストリーミングとコルーチン型 | [suspend.md](../suspend.md) |
+| 壊れた文のあとのsoft error | [recovery.md](recovery.md) |
+| ストリーミングとコルーチン型 | [suspend.md](suspend.md) |
 
 このリポジトリでは:
 

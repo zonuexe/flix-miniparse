@@ -16,7 +16,7 @@ An educational implementation of parser combinators in [Flix](https://flix.dev/)
 
 It is **not** a production-ready replacement for industrial parser generators.
 
-New to combinators? Start with **[tutorial.md](tutorial.md)** (Parsec vs PEG with examples).
+New to combinators? Start with **[tutorial.md](tutorial.md)** (Parsec vs PEG with examples). 日本語: **[ja/tutorial.md](ja/tutorial.md)**.
 
 ## Library modules
 
@@ -121,6 +121,7 @@ Run everything with `flix run` (see root `Main.flix`; labs live under `test/Exam
 | [recovery.md](recovery.md) | Panic-mode recovery and multi-error diagnostics |
 | [suspend.md](suspend.md) | CoParser vs Stream, free monad, Bridge |
 | [README.md](README.md) | Index of all docs |
+| [ja/README.md](ja/README.md) | Japanese guides index |
 
 ## Comparison bench (optional)
 

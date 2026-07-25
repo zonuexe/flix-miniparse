@@ -175,6 +175,7 @@ local fpkgs with `bench/scripts/install-local-deps.sh`, then `cd bench && flix r
 | [recovery.md](recovery.md) | Panic-mode recovery and diagnostics |
 | [suspend.md](suspend.md) | Stream vs Suspend, free monad, Bridge |
 | [README.md](README.md) | Documentation index |
+| [ja/README.md](ja/README.md) | Japanese guides |
 
 ## 6. Package layout (consumer view)
 
@@ -188,6 +189,7 @@ local fpkgs with `bench/scripts/install-local-deps.sh`, then `cd bench && flix r
 | `docs/recovery.md` | Panic-mode recovery guide |
 | `docs/suspend.md` | CoParser / Stream guide |
 | `docs/design-doc.md` | This design history |
+| `docs/ja/**` | Japanese guides |
 | `CHANGELOG.md` | Release notes |
 | `flix.toml` | Package `miniparse` |
 | `LICENSE.md` | License text packed into the fpkg |

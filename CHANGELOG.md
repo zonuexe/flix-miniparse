@@ -19,7 +19,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 ### Added
 
 - `docs/tutorial.md`: walkthrough from combinators to Parsec vs PEG and where the labs fit.
-- Japanese tutorial at `docs/ja/tutorial.md` (no hard wrap; no spaces between CJK and Latin).
+- Japanese docs under `docs/ja/` (`tutorial`, `overview`, `recovery`, `suspend`, `design-doc`; Wikipedia ja links; no hard wrap; no CJK–Latin spacing).
 
 ## [0.3.0] - 2026-07-25
 

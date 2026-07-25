@@ -82,6 +82,7 @@ def digits(): MiniParse.Core.Parser[String] =
 | Doc | For |
 | --- | --- |
 | **[docs/](docs/README.md)** | Guides (overview, recovery, suspend, design) |
+| **[docs/ja/](docs/ja/README.md)** | 日本語ガイド |
 | **[CHANGELOG.md](CHANGELOG.md)** | Release history |
 | **[CONTRIBUTING.md](CONTRIBUTING.md)** | Clone, develop, test, package this repo |
 
