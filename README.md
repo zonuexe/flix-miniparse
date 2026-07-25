@@ -83,7 +83,8 @@ Modules under `Examples.*` are **teaching demos**, not a stable API:
 | Lab | Idea |
 | --- | --- |
 | Postal / JSON / Expr | Core → recursion → precedence |
-| Keyword / MiniLang / CoLang | `if` vs `ifa`; tiny languages |
+| Keyword / MiniLang / CoLang | `if` vs `ifa`; pure vs suspendable mini language |
+| LangCompare | MiniLang vs CoLang AST/run parity table |
 | Packrat / LeftRec | Memoization; Warth-style growth |
 | Stream / Suspend / CostCompare | Restart vs continuation cost |
 

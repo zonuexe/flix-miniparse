@@ -84,7 +84,8 @@ use MiniParse.Suspend.{string, orElse, parseChunks, keyword, ident}
 | `Packrat` / `LeftRec` | Exponential vs memo; Warth growth |
 | `MiniLang` | `let` / `print` / `if` on pure parsers |
 | `StreamDemo` / `SuspendDemo` | Chunked postal / JSON; CoParser postal |
-| `CoLang` | MiniLang fragment on `CoParser` |
+| `CoLang` | Full MiniLang on `CoParser` (shared AST; chunked + Bridge) |
+| `LangCompare` | MiniLang vs CoLang AST/run parity table |
 | `CostCompare` | charVisits: Stream ~ n²/2 vs Suspend ~ n |
 
 Run everything with `flix run` (see root `Main.flix`; labs live under `test/Examples/`).

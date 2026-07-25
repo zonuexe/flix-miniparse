@@ -106,6 +106,21 @@ mod MiniParse.Suspend {
     pub def void(p: CoParser[a]): CoParser[Unit] =
         map(_ -> (), p)
 
+    /// Defer building a recursive `CoParser` until interpretation.
+    ///
+    /// Uses `Peek` so the thunk is not forced while the free program is being
+    /// *constructed* (important for mutual recursion such as `stmt` / `expr`).
+    pub def delay(thunk: Unit -> CoParser[a]): CoParser[a] =
+        CoParser.Peek(_ -> thunk())
+
+    /// Left-associative fold: `p (op p)*`.
+    pub def chainl1(p: CoParser[a], op: CoParser[(a, a) -> a]): CoParser[a] =
+        flatMap(x ->
+            map(fs -> List.foldLeft((acc, f) -> f(acc), x, fs),
+                many(flatMap(f -> map(y -> (acc -> f(acc, y)), p), op))),
+            p
+        )
+
     ///////////////////////////////////////////////////////////////////////////
     // Character combinators
     ///////////////////////////////////////////////////////////////////////////

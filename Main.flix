@@ -106,9 +106,31 @@ def main(): Unit \ IO = {
     println("  deep orElse abc|abx on ab|x: ${Examples.SuspendDemo.parseAbcOrAbx("ab" :: "x" :: Nil)}");
 
     println("");
-    println("== CoLang (CoParser MiniLang fragment) ==");
+    println("== CoLang (full MiniLang on CoParser) ==");
     println("  word if/ifa: ${Examples.CoLang.parseWord("if")} / ${Examples.CoLang.parseWord("ifa")}");
-    println("  program: ${Examples.CoLang.parseProgram("let ifa = 2; print ifa;")}");
+    let coProg =
+        "let i = 1; let s = 0; while i <= 3 do { let s = s + i; let i = i + 1; } print s; print 1 + 1 == 2;";
+    println("  source: ${coProg}");
+    match Examples.CoLang.runSource(coProg) {
+        case Ok(Ok((_env, out))) => println("  output = ${out}")
+        case Ok(Err(e))          => println("  runtime error: ${e}")
+        case Err(e)              => println("  parse error: ${e}")
+    };
+    match Examples.CoLang.runSourceChunks(
+        "let x = 1 +" :: " 2; print x * 3;" :: Nil
+    ) {
+        case Ok(Ok((_, out))) => println("  chunked let/print: ${out}")
+        case other            => println("  chunked error: ${other}")
+    };
+    println("  Bridge.parseCo(program): ${MiniParse.Bridge.parseCo(
+        Examples.CoLang.program(),
+        "print 2 * 3;"
+    )}");
+
+    println("");
+    println("== LangCompare (MiniLang pure vs CoLang CoParser) ==");
+    println(Examples.LangCompare.formatReport());
+    println("  legend: AST/run  = agree  ≠ disagree  - skipped");
 
     println("");
     println("== Cost: Stream restart vs Suspend continue ==");

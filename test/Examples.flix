@@ -13,7 +13,8 @@
 /// | `Examples.Packrat` / `LeftRec` | Memoization; left recursion |
 /// | `Examples.MiniLang` | Pure-parser mini language (`while`, comparisons) |
 /// | `Examples.StreamDemo` / `SuspendDemo` | Streaming styles |
-/// | `Examples.CoLang` | CoParser MiniLang fragment |
+/// | `Examples.CoLang` | Full MiniLang grammar on `CoParser` (+ Bridge) |
+/// | `Examples.LangCompare` | MiniLang vs CoLang parse/run parity table |
 /// | `Examples.CostCompare` | Stream vs Suspend scan cost |
 ///
 mod Examples {
