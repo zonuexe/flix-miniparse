@@ -11,6 +11,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - In-repo `bench/` nested project: wall-clock microbenchmarks vs sibling flix-parsec (`digits`, `many-a`, `skip-till`, `lines`, `csv-ones`).
 - `MiniParse.Suspend` combinator expansion toward pure `Combinator` parity: `oneOf` / `noneOf`, `manyTill`, `sepBy` / `sepEndBy` / `endBy`, `chainr1`, `ws` / `lexeme` / `symbol` / `between`, `takeWhile` / `hexDigit` / `endOfLine`, and related helpers.
 - `MiniParse.Recover`: panic-mode resync (`skipPastOneOf`, `resync`), `recover` / `manySkipping`, `WithErrors` results; `ErrorFormat.formatErrors` / `formatWithErrors`; `Examples.RecoverLab` (strict vs resilient MiniLang).
+- Docs: `docs/recovery.md` (panic-mode recovery), `docs/suspend.md` (CoParser vs Stream / free monad), `docs/README.md` (index).
 
 ## [0.2.0] - 2026-07-25
 

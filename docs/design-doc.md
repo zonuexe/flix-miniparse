@@ -156,13 +156,23 @@ Progressive steps: implement features, then validate with a concrete target.
 | **13** | Done | `Suspend` combinator expansion (sepBy, manyTill, lexeme/symbol, chainr1, …) |
 | **14** | Done | `MiniParse.Recover` panic-mode recovery; `ErrorFormat.formatErrors`; RecoverLab |
 
-Optional follow-ups: further handler-style effects docs; CoParser-level recovery.
+Optional follow-ups: CoParser-level recovery; algebraic-handler port of `CoParser`
+(see [suspend.md](suspend.md) for the free-ADT rationale).
 
 ### Cross-library microbench
 
 Nested package `bench/` (not shipped in the fpkg) compares pure/`CoParser`
 miniparse combinators to sibling `flix-parsec` on shared micro-tasks. Install
 local fpkgs with `bench/scripts/install-local-deps.sh`, then `cd bench && flix run`.
+
+### User-facing guides
+
+| Doc | Topic |
+| --- | --- |
+| [overview.md](overview.md) | Module map and snippets |
+| [recovery.md](recovery.md) | Panic-mode recovery and diagnostics |
+| [suspend.md](suspend.md) | Stream vs Suspend, free monad, Bridge |
+| [README.md](README.md) | Documentation index |
 
 ## 6. Package layout (consumer view)
 
@@ -173,6 +183,8 @@ local fpkgs with `bench/scripts/install-local-deps.sh`, then `cd bench && flix r
 | `test/Examples/**` | Labs / demos — copy patterns, do not treat as API (not shipped) |
 | `test/**` | Automated tests |
 | `docs/overview.md` | Short consumer map |
+| `docs/recovery.md` | Panic-mode recovery guide |
+| `docs/suspend.md` | CoParser / Stream guide |
 | `docs/design-doc.md` | This design history |
 | `CHANGELOG.md` | Release notes |
 | `flix.toml` | Package `miniparse` |

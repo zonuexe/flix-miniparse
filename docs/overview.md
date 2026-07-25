@@ -32,10 +32,22 @@ MiniParse
 └── Bridge        CoParser ↔ pure Parser embeddings
 ```
 
-`Suspend` now mirrors most of `Combinator` (lists, folding, lexical `ws`/`lexeme`/`symbol`,
-`manyTill` / `sepBy` / `sepEndBy`, character classes). Remaining gaps vs pure are mostly
-parser-level `lookAhead` / `notFollowedBy` of arbitrary subparsers (char-level `Peek` /
-`notFollowedByPred` cover the common cases).
+`Suspend` mirrors most of `Combinator` (lists, folding, lexical helpers, character classes).
+Char-level lookahead is `Peek` / `notFollowedByPred` / `keyword`. Deeper notes:
+[suspend.md](suspend.md).
+
+### Recovery (panic-mode)
+
+```flix
+use MiniParse.Recover.{programSkipping, resync, parseWithErrors, valueOf, errorsOf}
+use MiniParse.ErrorFormat.{formatErrors}
+
+// programSkipping(stmt(), resync(";}"))
+// parseWithErrors(p, src)  ==>  Ok(WithErrors(items, softErrs)) | Err(hard)
+```
+
+Soft errors are formatted with `formatErrors` / `formatWithErrors`. Guide:
+[recovery.md](recovery.md). Lab: `Examples.RecoverLab`.
 
 ### Bridge
 
@@ -99,7 +111,12 @@ Run everything with `flix run` (see root `Main.flix`; labs live under `test/Exam
 
 ## Design depth
 
-Architecture, roadmap history, and rationale: [design-doc.md](design-doc.md).
+| Doc | Topic |
+| --- | --- |
+| [design-doc.md](design-doc.md) | Architecture, roadmap, package layout |
+| [recovery.md](recovery.md) | Panic-mode recovery and multi-error diagnostics |
+| [suspend.md](suspend.md) | CoParser vs Stream, free monad, Bridge |
+| [README.md](README.md) | Index of all docs |
 
 ## Comparison bench (optional)
 

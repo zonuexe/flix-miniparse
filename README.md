@@ -67,14 +67,14 @@ def digits(): MiniParse.Core.Parser[String] =
 | [`MiniParse.Suspend`](src/MiniParse/Suspend.flix) | `CoParser` + deep `orElse` |
 | [`MiniParse.Bridge`](src/MiniParse/Bridge.flix) | `CoParser` ↔ pure `Parser` |
 
-More detail: **[docs/overview.md](docs/overview.md)** · design notes: **[docs/design-doc.md](docs/design-doc.md)** · history: **[CHANGELOG.md](CHANGELOG.md)**.
+More detail: **[docs/](docs/README.md)** (overview, recovery, suspend, design) · history: **[CHANGELOG.md](CHANGELOG.md)**.
 
 ```text
   MiniParse.Parsec  |  MiniParse.PEG  |  MiniParse.Suspend
            \        |        /                  |
             Combinator + Core              CoParser driver
                      |                          |
-              Stream (adapter)           Packrat / ErrorFormat
+         Stream · Recover · Packrat · ErrorFormat
 ```
 
 ## Examples (labs)
@@ -108,7 +108,10 @@ flix-miniparse/
 │   └── Test*.flix         # flix test
 ├── bench/                 # nested project: vs flix-parsec microbench
 ├── docs/
+│   ├── README.md          # docs index
 │   ├── overview.md        # API map for consumers
+│   ├── recovery.md        # panic-mode recovery guide
+│   ├── suspend.md         # CoParser / Stream notes
 │   └── design-doc.md      # architecture & roadmap
 ├── CHANGELOG.md
 ├── LICENSE

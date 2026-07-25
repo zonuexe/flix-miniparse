@@ -1,6 +1,8 @@
 ///
 /// Lab: panic-mode recovery on MiniLang statement lists.
 ///
+/// Guide: `docs/recovery.md`.
+///
 /// **Without recovery** one bad statement aborts the whole program.
 /// **With recovery** we resync on `;` (and whitespace), keep later statements,
 /// and collect soft `ParseError`s for diagnostics.
