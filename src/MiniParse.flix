@@ -10,7 +10,8 @@
 /// | `MiniParse.Parsec` | Explicit backtracking (`orElse`, `attempt`) |
 /// | `MiniParse.PEG` | Automatic backtrack (`choice`, `&` / `!` predicates) |
 /// | `MiniParse.Packrat` | Packrat table helpers (`Region` + `MutMap`) |
-/// | `MiniParse.ErrorFormat` | Caret-style error messages |
+/// | `MiniParse.ErrorFormat` | Caret-style error messages (incl. multi-error) |
+/// | `MiniParse.Recover` | Panic-mode recovery (`manySkipping`, `resync`) |
 /// | `MiniParse.Stream` | Chunked input, restart-style `Await` |
 /// | `MiniParse.Suspend` | Coroutine `CoParser`, deep `orElse`, shared combinators |
 /// | `MiniParse.Bridge` | Embed `CoParser` as pure `Parser` and vice versa |

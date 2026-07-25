@@ -62,6 +62,7 @@ def digits(): MiniParse.Core.Parser[String] =
 | [`MiniParse.PEG`](src/MiniParse/PEG.flix) | Auto backtrack + predicates |
 | [`MiniParse.Packrat`](src/MiniParse/Packrat.flix) | Memo tables (`Region`) |
 | [`MiniParse.ErrorFormat`](src/MiniParse/ErrorFormat.flix) | Pretty diagnostics |
+| [`MiniParse.Recover`](src/MiniParse/Recover.flix) | Panic-mode recovery (`manySkipping`) |
 | [`MiniParse.Stream`](src/MiniParse/Stream.flix) | Chunked input (restart `Await`) |
 | [`MiniParse.Suspend`](src/MiniParse/Suspend.flix) | `CoParser` + deep `orElse` |
 | [`MiniParse.Bridge`](src/MiniParse/Bridge.flix) | `CoParser` ↔ pure `Parser` |
@@ -85,6 +86,7 @@ Modules under `Examples.*` are **teaching demos**, not a stable API:
 | Postal / JSON / Expr | Core → recursion → precedence |
 | Keyword / MiniLang / CoLang | `if` vs `ifa`; pure vs suspendable mini language |
 | LangCompare | MiniLang vs CoLang AST/run parity table |
+| RecoverLab | Panic-mode recovery; soft multi-errors |
 | Packrat / LeftRec | Memoization; Warth-style growth |
 | Stream / Suspend / CostCompare | Restart vs continuation cost |
 

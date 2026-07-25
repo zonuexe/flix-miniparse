@@ -197,7 +197,19 @@ def main(): Unit \ IO = {
     println("-- stream hard fail --");
     println(formatStreamStep("x", step(digit(), feed("x", open()))));
     println("-- suspend incomplete (Await) --");
-    println(formatSuspendOutcome("ab", startWith(coString("abc"), "ab")))
+    println(formatSuspendOutcome("ab", startWith(coString("abc"), "ab")));
+
+    println("");
+    println("== Recover (panic-mode on MiniLang) ==");
+    let broken = Examples.RecoverLab.sampleBroken();
+    println(broken);
+    println(Examples.RecoverLab.report(broken));
+    match Examples.RecoverLab.runResilient(broken) {
+        case Ok((w, Ok((_, out)))) =>
+            println("run after recovery: output=${out}, softErrors=${List.length(MiniParse.Recover.errorsOf(w))}")
+        case other =>
+            println("run after recovery: ${other}")
+    }
 }
 
 def showTok(r: Result[MiniParse.Core.ParseError, Examples.Keyword.Token]): String =

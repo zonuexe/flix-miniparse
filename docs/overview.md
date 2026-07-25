@@ -25,7 +25,8 @@ MiniParse
 ├── Parsec        orElse (no auto-rewind), attempt
 ├── PEG           choice, andPredicate, notPredicate
 ├── Packrat       Table / Cell / newTable (Region + MutMap)
-├── ErrorFormat   formatError (line + caret)
+├── ErrorFormat   formatError / formatErrors (line + caret)
+├── Recover       panic-mode manySkipping, resync, WithErrors
 ├── Stream        feed / close / step → Done | Fail | Await  (restart)
 ├── Suspend       CoParser free monad, deep orElse, Peek/keyword, shared combinators
 └── Bridge        CoParser ↔ pure Parser embeddings
@@ -91,6 +92,7 @@ use MiniParse.Suspend.{string, orElse, parseChunks, keyword, ident}
 | `StreamDemo` / `SuspendDemo` | Chunked postal / JSON; CoParser postal |
 | `CoLang` | Full MiniLang on `CoParser` (shared AST; chunked + Bridge) |
 | `LangCompare` | MiniLang vs CoLang AST/run parity table |
+| `RecoverLab` | Strict vs resilient MiniLang; multi-error report |
 | `CostCompare` | charVisits: Stream ~ n²/2 vs Suspend ~ n |
 
 Run everything with `flix run` (see root `Main.flix`; labs live under `test/Examples/`).

@@ -36,6 +36,35 @@ mod MiniParse.ErrorFormat {
             snippet(input, pos)
     }
 
+    /// Format several soft errors (recovery), numbered, separated by blank lines.
+    ///
+    /// Empty list yields `"no errors"`.
+    pub def formatErrors(input: String, errs: List[ParseError]): String = match errs {
+        case Nil =>
+            "no errors"
+        case _ => {
+            def loop(i: Int32, rest: List[ParseError], acc: List[String]): String =
+                match rest {
+                    case Nil =>
+                        List.join("\n\n", List.reverse(acc))
+                    case e :: t =>
+                        let block = "(${i}) " + formatError(input, e);
+                        loop(i + 1, t, block :: acc)
+                };
+            loop(1, errs, Nil)
+        }
+    }
+
+    /// Format a recovered result: primary summary + optional soft-error list.
+    pub def formatWithErrors(input: String, w: MiniParse.Recover.WithErrors[a]): String =
+        match w {
+            case MiniParse.Recover.WithErrors.WithErrors(_, es) =>
+                if (List.isEmpty(es))
+                    "ok (clean)"
+                else
+                    "ok with ${List.length(es)} soft error(s):\n" + formatErrors(input, es)
+        }
+
     /// Format "not enough input yet" (open stream / suspended parser).
     ///
     /// Distinct from `formatError` so demos and UIs can treat incomplete input
