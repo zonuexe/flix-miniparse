@@ -118,7 +118,8 @@ flix-miniparse/
 | `flix check` | Type-check |
 | `flix test` | Run unit tests |
 | `flix run` | Demo tour |
-| `flix build` | Build artifacts under `build/` |
+| `flix build-pkg` | Build `artifact/flix-miniparse.fpkg` (library only) |
+| `bash scripts/check-fpkg.sh` | Guard fpkg has no `Main` / `Examples` |
 
 CI: [`.github/workflows/build-and-test.yaml`](.github/workflows/build-and-test.yaml) (JDK 21, Flix from `flix.toml`).
 

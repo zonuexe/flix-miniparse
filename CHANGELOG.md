@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+### Added
+
+- CI and `scripts/check-fpkg.sh` guard that the published fpkg contains only `MiniParse.*` library sources.
+- Shared diagnostics helpers for incomplete input versus hard parse errors across pure parse, Stream, and Suspend.
+
 ### Changed
 
 - Moved demo modules out of the published package so consumers no longer pull `Main` or `Examples` from the fpkg.

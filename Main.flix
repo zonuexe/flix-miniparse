@@ -13,9 +13,11 @@ def main(): Unit \ IO = {
     use Examples.MiniLang.{runSource};
     use Examples.LeftRec.{parseLeft, parseRight};
     use Examples.StreamDemo.{parseJsonChunks};
-    use MiniParse.ErrorFormat.{formatError};
+    use MiniParse.ErrorFormat.{formatError, formatStreamStep, formatSuspendOutcome};
     use MiniParse.Core.{parse};
-    use MiniParse.Combinator.{digit};
+    use MiniParse.Combinator.{digit, digits};
+    use MiniParse.Stream.{open, feed, step};
+    use MiniParse.Suspend.{startWith, string => coString};
 
     println("== Postal codes ==");
     foreach (s <- "150-0002" :: "〒150-0002" :: Nil) {
@@ -140,11 +142,18 @@ def main(): Unit \ IO = {
     };
 
     println("");
-    println("== Error formatting ==");
+    println("== Error formatting (unified) ==");
+    println("-- pure parse mismatch --");
     match parse(digit(), "xy") {
-        case Ok(_)  => println("unexpected success")
         case Err(e) => println(formatError("xy", e))
-    }
+        case Ok(_)  => println("unexpected success")
+    };
+    println("-- stream incomplete (Await) --");
+    println(formatStreamStep("12", step(digits(3), feed("12", open()))));
+    println("-- stream hard fail --");
+    println(formatStreamStep("x", step(digit(), feed("x", open()))));
+    println("-- suspend incomplete (Await) --");
+    println(formatSuspendOutcome("ab", startWith(coString("abc"), "ab")))
 }
 
 def showTok(r: Result[MiniParse.Core.ParseError, Examples.Keyword.Token]): String =

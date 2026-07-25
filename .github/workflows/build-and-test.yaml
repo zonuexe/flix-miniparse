@@ -36,3 +36,9 @@ jobs:
 
       - name: Test
         run: java -jar flix.jar test
+
+      - name: Build package
+        run: java -jar flix.jar build-pkg
+
+      - name: Guard fpkg is library-only
+        run: bash scripts/check-fpkg.sh
