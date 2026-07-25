@@ -18,7 +18,7 @@
 
 産業用パーサ生成器の置き換えを目指したプロダクション向け製品ではない。
 
-コンビネータが初めてなら**[tutorial.md](tutorial.md)**（ParsecとPEGの例つき）から。
+コンビネータが初めてなら[**tutorial.md**](tutorial.md)（ParsecとPEGの例つき）から。
 
 ## ライブラリモジュール
 

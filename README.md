@@ -22,14 +22,14 @@ one shared engine (`Core` + `Combinator`):
 
 | Style | Module | Backtracking in a nutshell |
 | --- | --- | --- |
-| **[Parsec](https://en.wikipedia.org/wiki/Parsec_(parser))** | `MiniParse.Parsec` | Predictive / LL(1)-like. After a branch **consumes** input, failure does **not** automatically try the next alternative. You opt in with `attempt` (Parsec’s `try`). |
-| **[PEG](https://en.wikipedia.org/wiki/Parsing_expression_grammar)** | `MiniParse.PEG` | Ordered choice (`/`) **rewinds** a failed alternative for you. Also has lookahead predicates (`&` / `!`). |
+| [**Parsec**](https://en.wikipedia.org/wiki/Parsec_(parser)) | `MiniParse.Parsec` | Predictive / LL(1)-like. After a branch **consumes** input, failure does **not** automatically try the next alternative. You opt in with `attempt` (Parsec’s `try`). |
+| [**PEG**](https://en.wikipedia.org/wiki/Parsing_expression_grammar) | `MiniParse.PEG` | Ordered choice (`/`) **rewinds** a failed alternative for you. Also has lookahead predicates (`&` / `!`). |
 
 Same grammar, different failure rules — that contrast is the point of the lab.
 Beyond the two fronts, the package also explores packrat memoization, streaming
 input, coroutine-style suspension, and panic-mode error recovery.
 
-Step-by-step walkthrough: **[docs/tutorial.md](docs/tutorial.md)** · 日本語: **[docs/ja/tutorial.md](docs/ja/tutorial.md)**.
+Step-by-step walkthrough: [**docs/tutorial.md**](docs/tutorial.md) · 日本語: [**docs/ja/tutorial.md**](docs/ja/tutorial.md).
 
 ## Use as a Flix dependency
 
@@ -81,10 +81,10 @@ def digits(): MiniParse.Core.Parser[String] =
 
 | Doc | For |
 | --- | --- |
-| **[docs/](docs/README.md)** | Guides (overview, recovery, suspend, design) |
-| **[docs/ja/](docs/ja/README.md)** | 日本語ガイド |
-| **[CHANGELOG.md](CHANGELOG.md)** | Release history |
-| **[CONTRIBUTING.md](CONTRIBUTING.md)** | Clone, develop, test, package this repo |
+| [**docs/**](docs/README.md) | Guides (overview, recovery, suspend, design) |
+| [**docs/ja/**](docs/ja/README.md) | 日本語ガイド |
+| [**CHANGELOG.md**](CHANGELOG.md) | Release history |
+| [**CONTRIBUTING.md**](CONTRIBUTING.md) | Clone, develop, test, package this repo |
 
 ## Exploring the labs (this repository)
 
@@ -104,7 +104,7 @@ flix test
 | Packrat / LeftRec | Memoization; Warth-style growth |
 | Stream / Suspend / CostCompare | Restart vs continuation cost |
 
-Tooling setup (Nix, JDK, CI, packaging): see **[CONTRIBUTING.md](CONTRIBUTING.md)**.
+Tooling setup (Nix, JDK, CI, packaging): see [**CONTRIBUTING.md**](CONTRIBUTING.md).
 
 ## License
 

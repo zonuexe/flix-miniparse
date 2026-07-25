@@ -11,7 +11,7 @@
 | Aspect | Choice |
 | --- | --- |
 | **Goal** | ゼロから実装してパーサコンビネータの内部を学ぶ。 |
-| **Focus** | **[Parsec](https://ja.wikipedia.org/wiki/Parsec_(パーサー))スタイルの予測的構文解析**（`try`による明示バックトラック）と**[PEG](https://ja.wikipedia.org/wiki/Parsing_expression_grammar)スタイルの自動バックトラック**（順序付き選択、述語、任意でpackratメモ化）を対比する。 |
+| **Focus** | [**Parsec**](https://ja.wikipedia.org/wiki/Parsec_(パーサー))スタイルの予測的構文解析（`try`による明示バックトラック）と[**PEG**](https://ja.wikipedia.org/wiki/Parsing_expression_grammar)スタイルの自動バックトラック（順序付き選択、述語、任意でpackratメモ化）を対比する。 |
 | **Audience** | 教育 / DIY — プロダクションのパーサフレームワークではない。 |
 | **Host language** | **Flix** — 代数的データ型、強い型システム、制御された局所可変のためのeffect / `Region`。 |
 

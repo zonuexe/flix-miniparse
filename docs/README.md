@@ -7,7 +7,7 @@
 | [design-doc.md](design-doc.md) | Contributors | Architecture, roadmap status, package layout |
 | [recovery.md](recovery.md) | Learners + practical users | Panic-mode recovery, soft errors, sync tokens |
 | [suspend.md](suspend.md) | Learners | CoParser vs Stream, free monad notes, Bridge |
-| **[ja/](ja/README.md)** | 日本語 | Full set of the above (`tutorial`, `overview`, `recovery`, `suspend`, `design-doc`) |
+| [**ja/**](ja/README.md) | 日本語 | Full set of the above (`tutorial`, `overview`, `recovery`, `suspend`, `design-doc`) |
 
 Also useful at the repo root:
 

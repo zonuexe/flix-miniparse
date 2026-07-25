@@ -16,7 +16,7 @@ An educational implementation of parser combinators in [Flix](https://flix.dev/)
 
 It is **not** a production-ready replacement for industrial parser generators.
 
-New to combinators? Start with **[tutorial.md](tutorial.md)** (Parsec vs PEG with examples). 日本語: **[ja/tutorial.md](ja/tutorial.md)**.
+New to combinators? Start with [**tutorial.md**](tutorial.md) (Parsec vs PEG with examples). 日本語: [**ja/tutorial.md**](ja/tutorial.md).
 
 ## Library modules
 
