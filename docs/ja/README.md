@@ -12,6 +12,7 @@
 | [tutorial.md](tutorial.md) | コンビネータ入門、ParsecとPEG（[パーサコンビネータ](https://ja.wikipedia.org/wiki/パーサコンビネータ)、[Parsec](https://ja.wikipedia.org/wiki/Parsec_(パーサー))、[PEG](https://ja.wikipedia.org/wiki/Parsing_expression_grammar)） |
 | [overview.md](overview.md) | モジュール地図、スニペット、ラボ表 |
 | [recovery.md](recovery.md) | panic-mode recovery、soft error、sync |
+| [debug.md](debug.md) | `label` / `TParser`トレース（transformerなし） |
 | [suspend.md](suspend.md) | CoParser vs Stream、free monad、Bridge |
 | [design-doc.md](design-doc.md) | アーキテクチャとロードマップ |
 
@@ -23,6 +24,7 @@
 2. **tutorial** — 最初の手を動かす道
 3. **overview** — 全体地図
 4. **recovery** — `stmt`リストのあと
-5. **suspend** — Stream / CoLangのとき
-6. **design-doc** — なぜ層が分かれているか
-7. [CONTRIBUTING](../../CONTRIBUTING.md) — このリポジトリをhackするときだけ
+5. **debug** — エラーが不透明なとき、規則のenter/exitトレイルが欲しいとき
+6. **suspend** — Stream / CoLangのとき
+7. **design-doc** — なぜ層が分かれているか
+8. [CONTRIBUTING](../../CONTRIBUTING.md) — このリポジトリをhackするときだけ

@@ -30,6 +30,7 @@ MiniParse
 ├── PEG           choice, andPredicate, notPredicate
 ├── Packrat       Table / Cell / newTable (Region + MutMap)
 ├── ErrorFormat   formatError / formatErrors (行 + キャレット)
+├── Debug         label / inContext; TParser + span（transformerなしトレース）
 ├── Recover       panic-mode manySkipping (pure Parser)
 ├── RecoverCo     同方針のCoParser (runProgramSkipping)
 ├── Stream        feed / close / step → Done | Fail | Await  (restart)
@@ -50,6 +51,21 @@ use MiniParse.ErrorFormat.{formatErrors}
 ```
 
 soft errorは`formatErrors` / `formatWithErrors`で整形する。ガイド: [recovery.md](recovery.md)。ラボ: `Examples.RecoverLab`。
+
+### Debug（ラベルと任意の規則トレイル）
+
+```flix
+use MiniParse.Debug.{label, inContext, spanP, parseTraced, formatTrace}
+
+// 日常: pure Parserに規則名（Parsecの<?>に近い）
+label("number", many1(digit()))
+
+// 失敗後も残る手順トレイル: TParser + span
+let (ev, r) = parseTraced(spanP("digit", digit()), "x");
+// formatTrace(ev)
+```
+
+ガイド: [debug.md](debug.md)。ラボ: `Examples.DebugLab`。
 
 ### Bridge
 
@@ -107,6 +123,7 @@ use MiniParse.Suspend.{string, orElse, parseChunks, keyword, ident}
 | `LangCompare` | MiniLangとCoLangのAST/run一致表 |
 | `RecoverLab` | 厳格 vs 回復可能なMiniLang（pure Recover） |
 | `CoRecoverLab` | CoLang / RecoverCoでの同様の実験 |
+| `DebugLab` | 小さなsum文法での`label` / `TParser` spanトレイル |
 | `CostCompare` | charVisits: Stream ~ n²/2 vs Suspend ~ n |
 
 すべては`flix run`で（ルート`Main.flix`; ラボは`test/Examples/`）。

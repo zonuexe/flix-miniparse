@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
+- `MiniParse.Debug`: everyday `label` / `inContext` / `getPos` on pure `Parser`, plus traced `TParser` with `span` / `parseTraced` (Writer-like logs without monad transformers); `Examples.DebugLab` and `docs/debug.md` (+ `docs/ja/debug.md`).
 - `MiniParse.RecoverCo`: panic-mode recovery for `CoParser` (`runProgramSkipping`, Co `resync`); `Examples.CoRecoverLab` compares pure Recover vs Co on the same MiniLang-shaped sample (chunks joined before recover).
 - `CONTRIBUTING.md` for repository development (Nix shell, test/package commands); root `README` focused on library consumers.
 

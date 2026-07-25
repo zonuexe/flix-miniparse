@@ -28,6 +28,7 @@ MiniParse
 ├── PEG           choice, andPredicate, notPredicate
 ├── Packrat       Table / Cell / newTable (Region + MutMap)
 ├── ErrorFormat   formatError / formatErrors (line + caret)
+├── Debug         label / inContext; TParser + span (trace without transformers)
 ├── Recover       panic-mode manySkipping (pure Parser)
 ├── RecoverCo     same policy for CoParser (runProgramSkipping)
 ├── Stream        feed / close / step → Done | Fail | Await  (restart)
@@ -51,6 +52,21 @@ use MiniParse.ErrorFormat.{formatErrors}
 
 Soft errors are formatted with `formatErrors` / `formatWithErrors`. Guide:
 [recovery.md](recovery.md). Lab: `Examples.RecoverLab`.
+
+### Debug (labels + optional rule trail)
+
+```flix
+use MiniParse.Debug.{label, inContext, spanP, parseTraced, formatTrace}
+
+// Everyday: name rules on pure Parser (Parsec-like <?>)
+label("number", many1(digit()))
+
+// Step trail (survives failure): TParser + span
+let (ev, r) = parseTraced(spanP("digit", digit()), "x");
+// formatTrace(ev)
+```
+
+Guide: [debug.md](debug.md). Lab: `Examples.DebugLab`.
 
 ### Bridge
 
@@ -109,6 +125,7 @@ use MiniParse.Suspend.{string, orElse, parseChunks, keyword, ident}
 | `LangCompare` | MiniLang vs CoLang AST/run parity table |
 | `RecoverLab` | Strict vs resilient MiniLang (pure Recover) |
 | `CoRecoverLab` | Same on CoLang / RecoverCo |
+| `DebugLab` | `label` / `TParser` span trail on a tiny sum grammar |
 | `CostCompare` | charVisits: Stream ~ n²/2 vs Suspend ~ n |
 
 Run everything with `flix run` (see root `Main.flix`; labs live under `test/Examples/`).
@@ -119,6 +136,7 @@ Run everything with `flix run` (see root `Main.flix`; labs live under `test/Exam
 | --- | --- |
 | [design-doc.md](design-doc.md) | Architecture, roadmap, package layout |
 | [recovery.md](recovery.md) | Panic-mode recovery and multi-error diagnostics |
+| [debug.md](debug.md) | Labels and traced `TParser` without transformers |
 | [suspend.md](suspend.md) | CoParser vs Stream, free monad, Bridge |
 | [README.md](README.md) | Index of all docs |
 | [ja/README.md](ja/README.md) | Japanese guides index |

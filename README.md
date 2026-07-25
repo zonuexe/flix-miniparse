@@ -63,6 +63,7 @@ def digits(): MiniParse.Core.Parser[String] =
 | [`MiniParse.PEG`](src/MiniParse/PEG.flix) | Auto backtrack + predicates |
 | [`MiniParse.Packrat`](src/MiniParse/Packrat.flix) | Memo tables (`Region`) |
 | [`MiniParse.ErrorFormat`](src/MiniParse/ErrorFormat.flix) | Pretty diagnostics |
+| [`MiniParse.Debug`](src/MiniParse/Debug.flix) | `label` / traced `TParser` (no transformers) |
 | [`MiniParse.Recover`](src/MiniParse/Recover.flix) | Panic-mode recovery (pure) |
 | [`MiniParse.RecoverCo`](src/MiniParse/RecoverCo.flix) | Panic-mode recovery (`CoParser`) |
 | [`MiniParse.Stream`](src/MiniParse/Stream.flix) | Chunked input (restart `Await`) |
@@ -74,14 +75,14 @@ def digits(): MiniParse.Core.Parser[String] =
            \        |        /                  |
             Combinator + Core              CoParser driver
                      |                          |
-         Stream · Recover · Packrat · ErrorFormat
+         Stream · Recover · Debug · Packrat · ErrorFormat
 ```
 
 ## Documentation
 
 | Doc | For |
 | --- | --- |
-| [**docs/**](docs/README.md) | Guides (overview, recovery, suspend, design) |
+| [**docs/**](docs/README.md) | Guides (overview, recovery, debug, suspend, design) |
 | [**docs/ja/**](docs/ja/README.md) | 日本語ガイド |
 | [**CHANGELOG.md**](CHANGELOG.md) | Release history |
 | [**CONTRIBUTING.md**](CONTRIBUTING.md) | Clone, develop, test, package this repo |
