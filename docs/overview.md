@@ -26,7 +26,8 @@ MiniParse
 ├── PEG           choice, andPredicate, notPredicate
 ├── Packrat       Table / Cell / newTable (Region + MutMap)
 ├── ErrorFormat   formatError / formatErrors (line + caret)
-├── Recover       panic-mode manySkipping, resync, WithErrors
+├── Recover       panic-mode manySkipping (pure Parser)
+├── RecoverCo     same policy for CoParser (runProgramSkipping)
 ├── Stream        feed / close / step → Done | Fail | Await  (restart)
 ├── Suspend       CoParser free monad, deep orElse, Peek/keyword, shared combinators
 └── Bridge        CoParser ↔ pure Parser embeddings
@@ -104,7 +105,8 @@ use MiniParse.Suspend.{string, orElse, parseChunks, keyword, ident}
 | `StreamDemo` / `SuspendDemo` | Chunked postal / JSON; CoParser postal |
 | `CoLang` | Full MiniLang on `CoParser` (shared AST; chunked + Bridge) |
 | `LangCompare` | MiniLang vs CoLang AST/run parity table |
-| `RecoverLab` | Strict vs resilient MiniLang; multi-error report |
+| `RecoverLab` | Strict vs resilient MiniLang (pure Recover) |
+| `CoRecoverLab` | Same on CoLang / RecoverCo |
 | `CostCompare` | charVisits: Stream ~ n²/2 vs Suspend ~ n |
 
 Run everything with `flix run` (see root `Main.flix`; labs live under `test/Examples/`).

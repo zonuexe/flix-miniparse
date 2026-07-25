@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+### Added
+
+- `MiniParse.RecoverCo`: panic-mode recovery for `CoParser` (`runProgramSkipping`, Co `resync`); `Examples.CoRecoverLab` compares pure Recover vs Co on the same MiniLang-shaped sample (chunks joined before recover).
+
 ## [0.3.0] - 2026-07-25
 
 Educational release focused on **panic-mode recovery**, fuller **CoParser** combinators, learner docs, and an optional **bench** against flix-parsec.

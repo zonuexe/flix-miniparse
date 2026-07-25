@@ -47,6 +47,7 @@ require "src/MiniParse/Stream.flix"
 require "src/MiniParse/Suspend.flix"
 require "src/MiniParse/ErrorFormat.flix"
 require "src/MiniParse/Recover.flix"
+require "src/MiniParse/RecoverCo.flix"
 require "src/MiniParse/Bridge.flix"
 
 if [[ "$fail" -ne 0 ]]; then

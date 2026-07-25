@@ -15,7 +15,8 @@
 /// | `Examples.StreamDemo` / `SuspendDemo` | Streaming styles |
 /// | `Examples.CoLang` | Full MiniLang grammar on `CoParser` (+ Bridge) |
 /// | `Examples.LangCompare` | MiniLang vs CoLang parse/run parity table |
-/// | `Examples.RecoverLab` | Panic-mode recovery + multi-error diagnostics |
+/// | `Examples.RecoverLab` | Panic-mode recovery + multi-error diagnostics (pure) |
+/// | `Examples.CoRecoverLab` | Same on CoLang / `RecoverCo` |
 /// | `Examples.CostCompare` | Stream vs Suspend scan cost |
 ///
 mod Examples {

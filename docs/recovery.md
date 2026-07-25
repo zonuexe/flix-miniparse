@@ -6,9 +6,11 @@ Related code:
 
 | Piece | Role |
 | --- | --- |
-| [`MiniParse.Recover`](../src/MiniParse/Recover.flix) | `WithErrors`, `resync`, `manySkipping`, `recover` |
+| [`MiniParse.Recover`](../src/MiniParse/Recover.flix) | Pure: `WithErrors`, `resync`, `manySkipping`, `recover` |
+| [`MiniParse.RecoverCo`](../src/MiniParse/RecoverCo.flix) | CoParser: `runProgramSkipping`, Co `resync` |
 | [`MiniParse.ErrorFormat`](../src/MiniParse/ErrorFormat.flix) | `formatError`, `formatErrors`, `formatWithErrors` |
-| [`Examples.RecoverLab`](../test/Examples/RecoverLab.flix) | Strict vs resilient MiniLang demo |
+| [`Examples.RecoverLab`](../test/Examples/RecoverLab.flix) | Strict vs resilient MiniLang (pure) |
+| [`Examples.CoRecoverLab`](../test/Examples/CoRecoverLab.flix) | Same on CoLang / RecoverCo |
 
 Run the lab via `flix run` (section **Recover**) or `flix test` (`TestRecover`).
 
@@ -187,11 +189,54 @@ Soft and hard errors share the same `ParseError` shape (`Position` + expected la
 
 ---
 
+## CoParser recovery (`MiniParse.RecoverCo`)
+
+Same panic-mode **policy** as pure `Recover`, driven over `CoParser` items with
+`runCoPartial` (eof asserted on the current remainder — like Bridge `toParser`).
+
+| Piece | Role |
+| --- | --- |
+| [`MiniParse.RecoverCo`](../src/MiniParse/RecoverCo.flix) | Co sync + `runProgramSkipping` |
+| [`Examples.CoRecoverLab`](../test/Examples/CoRecoverLab.flix) | CoLang + pure-vs-Co report |
+
+```flix
+use MiniParse.RecoverCo.{resync, runProgramSkipping}
+use Examples.CoLang.{stmt}
+
+runProgramSkipping(stmt(), resync(";}"), source)
+// same sample as RecoverLab → same kept stmts / soft-error count
+```
+
+| API | Notes |
+| --- | --- |
+| `skipPastOneOf` / `resync` | `CoParser` sync (combinators, not offset scan) |
+| `runManySkipping` / `runProgramSkipping` | Full string; trailing `ws` + EOF required |
+| `runProgramSkippingChunks` | **Joins** chunks then recovers (not mid-chunk soft-fail) |
+| `runRecover` | Single item + fallback on a full string |
+
+**Why drivers instead of a free `manySkipping` node?** Soft-error accumulation is a
+loop over attempt/resync results. Encoding that as free constructors is possible
+but heavier; drivers mirror pure `Recover`’s `mkParser` loop and stay readable.
+
+**Chunks:** true soft recovery without joining (sync across `Await` boundaries)
+is future work. Joining is honest for “I have a list of pieces that form one file.”
+
+Pure vs Co on the same MiniLang-shaped sample:
+
+```flix
+Examples.CoRecoverLab.report(Examples.RecoverLab.sampleBroken())
+// pure Recover:  Ok (2 stmt(s), 1 soft)
+// Co RecoverCo:  Ok (2 stmt(s), 1 soft)
+```
+
+---
+
 ## What recovery does *not* do
 
-- **CoParser / Stream**: `Recover` is for pure `Parser` only. Chunked or suspendable recovery is a separate design (resume after sync across chunks).
+- **Stream restart layer**: no panic-mode adapter yet for `MiniParse.Stream`.
+- **Mid-chunk soft recovery** without joining (RecoverCo joins first).
 - **Automatic insert/delete** of tokens (edit-distance repair).
-- **Semantic** recovery (type errors, unbound names) — that stays in the interpreter / checker (`MiniLang.runProgram` still returns `RuntimeError`).
+- **Semantic** recovery (type errors, unbound names) — stays in the interpreter (`RuntimeError`).
 - **Changing** Parsec commit or PEG ordered choice; wrap completed item parsers, do not replace `orElse`.
 
 ---

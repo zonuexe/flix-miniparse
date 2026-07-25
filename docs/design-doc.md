@@ -156,9 +156,10 @@ Progressive steps: implement features, then validate with a concrete target.
 | **13** | Done | `Suspend` combinator expansion (sepBy, manyTill, lexeme/symbol, chainr1, …) |
 | **14** | Done | `MiniParse.Recover` panic-mode recovery; `ErrorFormat.formatErrors`; RecoverLab |
 | **15** | Done | Learner guides (`docs/recovery.md`, `docs/suspend.md`); package **0.3.0** |
+| **16** | Done | `MiniParse.RecoverCo` + `CoRecoverLab` (CoParser panic-mode) |
 
-Optional follow-ups: CoParser-level recovery; algebraic-handler port of `CoParser`
-(see [suspend.md](suspend.md) for the free-ADT rationale).
+Optional follow-ups: mid-chunk soft recovery without joining; algebraic-handler
+port of `CoParser` (see [suspend.md](suspend.md)).
 
 ### Cross-library microbench
 

@@ -89,7 +89,10 @@ Use Bridge when composing Suspend with Parsec/PEG stacks or when running a pure 
 
 ## Recovery
 
-Panic-mode recovery (`MiniParse.Recover`) targets **pure** `Parser` statement lists. It does not yet drive `CoParser` across soft errors. See [recovery.md](recovery.md).
+- Pure lists: `MiniParse.Recover` (`manySkipping`).
+- CoParser lists: `MiniParse.RecoverCo` (`runProgramSkipping` on full string / joined chunks).
+
+See [recovery.md](recovery.md).
 
 ---
 

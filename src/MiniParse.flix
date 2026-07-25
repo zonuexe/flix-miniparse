@@ -11,7 +11,8 @@
 /// | `MiniParse.PEG` | Automatic backtrack (`choice`, `&` / `!` predicates) |
 /// | `MiniParse.Packrat` | Packrat table helpers (`Region` + `MutMap`) |
 /// | `MiniParse.ErrorFormat` | Caret-style error messages (incl. multi-error) |
-/// | `MiniParse.Recover` | Panic-mode recovery (`manySkipping`, `resync`) |
+/// | `MiniParse.Recover` | Panic-mode recovery for pure `Parser` |
+/// | `MiniParse.RecoverCo` | Same policy for `CoParser` (`runProgramSkipping`) |
 /// | `MiniParse.Stream` | Chunked input, restart-style `Await` |
 /// | `MiniParse.Suspend` | Coroutine `CoParser`, deep `orElse`, shared combinators |
 /// | `MiniParse.Bridge` | Embed `CoParser` as pure `Parser` and vice versa |

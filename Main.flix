@@ -209,6 +209,16 @@ def main(): Unit \ IO = {
             println("run after recovery: output=${out}, softErrors=${List.length(MiniParse.Recover.errorsOf(w))}")
         case other =>
             println("run after recovery: ${other}")
+    };
+
+    println("");
+    println("== RecoverCo (CoParser / CoLang) ==");
+    println(Examples.CoRecoverLab.report(broken));
+    match Examples.CoRecoverLab.runResilient(broken) {
+        case Ok((w, Ok((_, out)))) =>
+            println("Co run after recovery: output=${out}, softErrors=${List.length(MiniParse.Recover.errorsOf(w))}")
+        case other =>
+            println("Co run after recovery: ${other}")
     }
 }
 
