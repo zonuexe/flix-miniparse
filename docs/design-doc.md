@@ -154,8 +154,7 @@ Progressive steps: implement features, then validate with a concrete target.
 | **11** | Done | CoLang full MiniLang grammar on `CoParser`; shared AST/runtime; Bridge demo |
 | **12** | Done | `Examples.LangCompare`: MiniLang vs CoLang parse/run parity table |
 
-Optional follow-ups: publish a SemVer git tag for `github:zonuexe/flix-miniparse`,
-further handler-style effects docs.
+Optional follow-ups: further handler-style effects docs; error recovery labs.
 
 ## 6. Package layout (consumer view)
 

@@ -6,11 +6,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-07-25
+
+Educational release focused on **Bridge**, full **CoLang** on the suspendable stack, and packing only library sources for dependents.
+
 ### Added
 
 - CI and `scripts/check-fpkg.sh` guard that the published fpkg contains only `MiniParse.*` library sources.
 - Shared diagnostics helpers for incomplete input versus hard parse errors across pure parse, Stream, and Suspend.
-- MiniLang comparison operators (`==`, `!=`, `<`, `<=`, `>`, `>=`) and `while` / `do` loops (with a iteration safety cap).
+- MiniLang comparison operators (`==`, `!=`, `<`, `<=`, `>`, `>=`) and `while` / `do` loops (with an iteration safety cap).
 - `MiniParse.Bridge` embeddings: `toParser` / `parseCo` (CoParser as pure `Parser`) and `fromParser` / `pureViaCo` (pure parser after buffering to EOF).
 - `MiniParse.Suspend.delay` and `chainl1` for recursive / left-associative `CoParser` grammars.
 - CoLang expanded to the full MiniLang surface (arithmetic, comparisons, `while`, blocks); shared MiniLang AST and interpreter; chunked `runSourceChunks` and Bridge interop demos.
@@ -40,5 +44,6 @@ First educational release of **miniparse** (`flix-miniparse`): a Flix lab for le
 - Educational example grammars: postal codes, JSON, arithmetic, keyword boundary, MiniLang, CoLang, streaming demos, and Stream versus Suspend scan-cost comparison.
 - Nix flake development shell (Flix 0.75.1 and JDK 21), GitHub Actions CI, EditorConfig, package docs (`README`, `docs/overview.md`, `docs/design-doc.md`).
 
-[Unreleased]: https://github.com/zonuexe/flix-miniparse/compare/v0.1.0...HEAD
+[Unreleased]: https://github.com/zonuexe/flix-miniparse/compare/v0.2.0...HEAD
+[0.2.0]: https://github.com/zonuexe/flix-miniparse/compare/v0.1.0...v0.2.0
 [0.1.0]: https://github.com/zonuexe/flix-miniparse/releases/tag/v0.1.0
